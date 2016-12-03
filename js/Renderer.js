@@ -1,5 +1,7 @@
 class Renderer {
   init(){
+    this.scale = 1;
+
     var canvas = document.createElement('canvas');
     this.context = canvas.getContext('2d');
     this.canvas = canvas;
@@ -14,13 +16,34 @@ class Renderer {
     this.render();
   }
 
+  zoomIn(){
+    //this.scale += 0.1;
+    this.context.scale(1.1, 1.1);
+  }
+
+  zoomOut(){
+    this.context.scale(0.9, 0.9);
+    //this.scale -= 0.1;
+  }
+
+  setOffset(x, y){
+    this.context.translate(x, y);
+  }
+
   render(){
     window.requestAnimationFrame(this.render.bind(this));
 
+    // var scale = this.scale;
+    // var offsetX = 0;
+    // var offsetY = 0;
     var context = this.context;
     var canvas = this.canvas;
+
     context.fillStyle = '#333';
+    context.save();
+    context.setTransform(1, 0, 0, 1, 0, 0);
     context.fillRect(0, 0, canvas.width, canvas.height);
+    context.restore();
 
     context.fillStyle = "#444";
     for(var bound of game.bounds){

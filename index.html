@@ -8,7 +8,7 @@
   </head>
   <body>
     <script>
-    
+
     var Engine = Matter.Engine,
         Render = Matter.Render,
         World = Matter.World,
@@ -26,9 +26,34 @@
     var game = new Game();
     game.addPlanet(800, 600, 180);
     game.addPlanet(1000, 300, 100);
-    game.addPlanet(700, 100, 140);
+    //game.addPlanet(700, 100, 140);
     game.addPlayer(100, 400, "#2467cc");
-    game.addPlayer(1500, 400, "#f52323", Math.PI);
+    game.addPlayer(1500, 400, "#d32626", Math.PI);
+
+    document.addEventListener("wheel", function(e){
+      if(e.deltaY < 0) renderer.zoomIn();
+      if(e.deltaY > 0) renderer.zoomOut();
+    });
+
+    var startX = 0;
+    var startY = 0;
+    document.addEventListener("mousedown", function(e){
+      startX = e.clientX;
+      startY = e.clientY;
+      document.addEventListener("mousemove", drag);
+    });
+
+    function drag(e){
+      var offsetX = e.clientX-startX;
+      var offsetY = e.clientY-startY;
+      renderer.setOffset(offsetX, offsetY);
+      startX = e.clientX;
+      startY = e.clientY;
+    }
+
+    document.addEventListener("mouseup", function(){
+      document.removeEventListener("mousemove", drag);
+    });
 
     document.body.onkeydown = function(e){
       if(e.key == "ArrowLeft"){
