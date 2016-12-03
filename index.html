@@ -1,0 +1,350 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+    <script src="matter.min.js"></script>
+  </head>
+  <body>
+    <script>
+    // module aliases
+    var Engine = Matter.Engine,
+        Render = Matter.Render,
+        World = Matter.World,
+        Bodies = Matter.Bodies,
+        Body = Matter.Body,
+        Events = Matter.Events,
+        Runner = Matter.Runner,
+        Composite = Matter.Composite,
+        Vector = Matter.Vector;
+
+    var engine = Engine.create();
+    engine.world.gravity.y = 0;
+    Engine.run(engine);
+
+    class Player {
+      constructor(x, y, color, angle){
+        this.lives = 5;
+        this.color = color;
+        this.power = 50;
+
+        var body = Bodies.circle(x, y, 20, {
+          collisionFilter: {
+            category: 0x0001
+          }
+        });
+        body.label = "player";
+        //player.restitution = 1;
+        //Body.setInertia(body, Infinity);
+        Body.setAngle(body, angle);
+        //Body.setStatic(body, true);
+        body.restitution = 1;
+        body.friction = 0;
+        body.frictionAir = 0.05;
+        body.frictionStatic = 0;
+        //Body.setMass(player, 1);
+        World.add(engine.world, body);
+        this.body = body;
+      }
+    }
+
+    class Game {
+      constructor(){
+        this.players = [];
+        this.planets = [];
+        this.bounds = [];
+        this.currentPlayerIndex = 0;
+        this.bulletTime = 0;
+        this.bulletTimeLimit = 500;
+        this.thinkTime = 0;
+        this.thinkTimeLimit = 1000;
+
+        this.createBounds();
+      }
+
+      createBounds(){
+        this.createBound(5, window.innerHeight/2, 10, window.innerHeight);
+        this.createBound(window.innerWidth/2, 5, window.innerWidth, 10);
+        this.createBound(window.innerWidth-5, window.innerHeight/2, 10, window.innerHeight);
+        this.createBound(window.innerWidth/2, window.innerHeight-5, window.innerWidth, 10);
+      }
+
+      createBound(x, y, width, height){
+        var bound = Bodies.rectangle(x, y, width, height, {
+          isStatic: true,
+          collisionFilter: {
+            category: 0x0002
+          }
+        });
+
+        World.add(engine.world, bound);
+        this.bounds.push(bound);
+      }
+
+      addPlanet(x, y, radius){
+        var planet = Bodies.circle(x, y, radius, {
+          collisionFilter: {
+            category: 0x0001
+          }
+        });
+        Body.setStatic(planet, true);
+        planet.restitution = 1;
+        planet.friction = 0.05;
+        planet.frictionAir = 0;
+        planet.frictionStatic = 0;
+        World.add(engine.world, planet);
+        this.planets.push(planet);
+      }
+
+      addPlayer(x, y, color = "#fff", angle = 0){
+        this.players.push(new Player(x, y, color, angle));
+      }
+
+      addBullet(){
+        if(!this.bullet){
+          var bulletRadius = 10;
+          var player = this.currentPlayer;
+          var body = player.body;
+          var x = body.position.x+(body.circleRadius+bulletRadius)*Math.cos(body.angle);
+          var y = body.position.y+(body.circleRadius+bulletRadius)*Math.sin(body.angle);
+          var bullet = Bodies.circle(x, y, bulletRadius, {
+            collisionFilter: {
+              category: 0x0001,
+              mask: 0x0001
+            }
+          });
+
+          Body.setInertia(bullet, Infinity);
+          //Body.setMass(bullet, 40);
+          var vel = {
+            x: 0.2*player.power*Math.cos(body.angle),
+            y: 0.2*player.power*Math.sin(body.angle)
+          }
+
+          Body.setVelocity(bullet, vel);
+
+          Body.setVelocity(player.body, Vector.neg(vel));
+
+          bullet.friction = 0.1;
+          bullet.frictionAir = 0;
+          bullet.frictionStatic = 0;
+          bullet.restitution = 1;
+          bullet.label = "bullet";
+          //Body.applyForce(bullet, {x: 0, y: 0}, {x: 0.01, y: 0.00});
+          World.add(engine.world, bullet);
+          this.bullet = bullet;
+        }
+      }
+
+      get currentPlayer(){
+        return this.players[this.currentPlayerIndex];
+      }
+
+      removeBullet(){
+        World.remove(engine.world, this.bullet);
+        this.bullet = undefined;
+      }
+
+      nextPlayer(){
+        if(this.currentPlayerIndex < this.players.length-1){
+          this.currentPlayerIndex++;
+        } else {
+          this.currentPlayerIndex = 0;
+        }
+      }
+
+      increasePower(){
+        var player = this.currentPlayer;
+        player.power = player.power+10;
+        if(player.power > 100) player.power = 100;
+      }
+
+      decreasePower(){
+        var player = this.currentPlayer;
+        player.power = player.power-10;
+        if(player.power < 0) player.power = 0;
+      }
+
+      endTurn(){
+        if(this.bullet) this.removeBullet();
+        this.nextPlayer();
+        this.bulletTime = 0;
+        this.thinkTime = 0;
+      }
+
+      get thinkProgress(){
+        return this.thinkTime/this.thinkTimeLimit;
+      }
+
+      get bulletProgress(){
+        return this.bulletTime/this.bulletTimeLimit;
+      }
+    }
+
+    var game = new Game();
+    game.addPlanet(800, 600, 180);
+    game.addPlanet(1000, 300, 100);
+    game.addPlanet(700, 100, 140);
+    game.addPlayer(100, 400, "#2467cc");
+    game.addPlayer(1500, 400, "#f52323", Math.PI);
+
+    document.body.onkeydown = function(e){
+      if(e.key == "ArrowLeft"){
+        Body.rotate(game.currentPlayer.body, -Math.PI/30);
+      }
+      if(e.key == "ArrowRight"){
+        Body.rotate(game.currentPlayer.body, Math.PI/30);
+      }
+      if(e.key == "ArrowUp"){
+        game.increasePower();
+      }
+      if(e.key == "ArrowDown"){
+        game.decreasePower();
+      }
+      if(e.keyCode == 32){
+        game.addBullet();
+      }
+    }
+
+    Events.on(engine, "beforeUpdate", function(){
+      if(game.bullet){
+        var bullet = game.bullet;
+        for(var planet of game.planets){
+          var r = Vector.sub(planet.position, bullet.position);
+          var mag = Vector.magnitude(r);
+          var norm = Vector.normalise(r);
+          var force = Vector.mult(norm, planet.circleRadius*0.001/mag);
+          Body.applyForce(bullet, bullet.position, force);
+        }
+
+        game.thinkTime = 0;
+        game.bulletTime++;
+        if(game.bulletProgress > 1){
+          game.endTurn();
+        }
+      } else {
+        game.bulletTime = 0;
+        game.thinkTime++;
+        if(game.thinkProgress > 1){
+          game.endTurn();
+        }
+      }
+    });
+
+    Events.on(engine, "collisionStart", function(e){
+      // Check if collision was with a player
+      var pair = e.pairs[0];
+      var body;
+      var bullet;
+      if(pair.bodyA.label == "player" && pair.bodyB.label == "bullet"){
+        body = pair.bodyA;
+        bullet = pair.bodyB;
+      }
+      else if(pair.bodyB.label == "player" && pair.bodyA.label == "bullet"){
+        body = pair.bodyB;
+        bullet = pair.bodyA;
+      }
+      else return;
+
+      // Find the player hit, and decrease lives
+      for(var player of game.players){
+        if(player.body.id == body.id){
+          player.lives--;
+          break;
+        }
+      }
+
+      // Remove bullet from game
+      game.endTurn();
+    });
+
+    var canvas = document.createElement('canvas'),
+        context = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    document.body.appendChild(canvas);
+
+    (function render() {
+
+        window.requestAnimationFrame(render);
+
+        context.fillStyle = '#333';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+
+
+        context.fillStyle = "#444";
+        for(var bound of game.bounds){
+          context.beginPath();
+          context.moveTo(bound.vertices[0].x, bound.vertices[0].y);
+          for(var point of bound.vertices){
+            context.lineTo(point.x, point.y);
+          }
+          context.fill();
+        }
+
+        if(game.bullet){
+          // Draw the bullet
+          var bullet = game.bullet;
+          context.fillStyle = game.currentPlayer.color;
+          context.beginPath();
+          context.arc(bullet.position.x, bullet.position.y, bullet.circleRadius, 2*Math.PI, false);
+          context.fill();
+
+          // Draw bullet bar
+          context.fillStyle = "#222";
+          context.beginPath();
+          context.fillRect(10, canvas.height-20, (canvas.width-20)*game.bulletProgress, 10);
+        } else {
+          // Draw think bar
+          context.fillStyle = "#222";
+          context.beginPath();
+          context.fillRect(10, canvas.height-20, (canvas.width-20)*game.thinkProgress, 10);
+        }
+
+        for(var planet of game.planets){
+          // Draw the planet
+          context.fillStyle = "#999";
+          context.beginPath();
+          context.arc(planet.position.x, planet.position.y, planet.circleRadius, 2*Math.PI, false);
+          context.fill();
+        }
+
+        for(var player of game.players){
+          var body = player.body;
+          // Draw the circle body
+          context.fillStyle = player.color;
+          context.beginPath();
+          context.arc(body.position.x, body.position.y, body.circleRadius, 2*Math.PI, false);
+          context.fill();
+
+          // Draw the angle indicator
+          context.beginPath();
+          context.strokeStyle = "#333";
+          context.lineWidth = 5;
+          context.lineCap = "round";
+          var scale = (100-player.power)/100;
+          var startX = body.position.x+body.circleRadius*Math.cos(body.angle)*scale;
+          var startY = body.position.y+body.circleRadius*Math.sin(body.angle)*scale;
+          var endX = body.position.x+body.circleRadius*Math.cos(body.angle);
+          var endY = body.position.y+body.circleRadius*Math.sin(body.angle);
+          context.moveTo(startX, startY);
+          context.lineTo(endX, endY);
+          context.stroke();
+
+          // Lives indicator
+          context.strokeStyle = player.color;
+          context.lineWidth = 2;
+          if(player === game.currentPlayer) context.globalAlpha = 1;
+          else context.globalAlpha = 0.5;
+          for(var i=0; i<player.lives-2; i++){
+            context.beginPath();
+            context.arc(body.position.x, body.position.y, body.circleRadius+4*(i+1)-1, 2*Math.PI, false);
+            context.stroke();
+          }
+          context.globalAlpha = 1;
+        }
+    })();
+
+    </script>
+  </body>
+</html>
