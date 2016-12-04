@@ -18,11 +18,11 @@ class Renderer {
     var windowRatio = window.innerWidth/window.innerHeight;
     if(gameRatio > windowRatio){
       this.scale = window.innerWidth/game.width;
-      this.offsetY = (window.innerHeight-game.height*this.scale)/2;
     } else {
       this.scale = window.innerHeight/game.height;
-      this.offsetX = (window.innerWidth-game.width*this.scale)/2;
     }
+    this.offsetX = (window.innerWidth-game.width*this.scale)/2;
+    this.offsetY = (window.innerHeight-game.height*this.scale)/2;
 
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
