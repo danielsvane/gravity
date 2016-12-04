@@ -3,15 +3,29 @@ class Renderer {
     this.scale = 1;
     this.offsetX = 0;
     this.offsetY = 0;
+    this.scaleFactor = 0.05;
 
     var canvas = document.createElement('canvas');
     this.context = canvas.getContext('2d');
     this.canvas = canvas;
-
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
     document.body.appendChild(canvas);
+
+    this.resize();
+  }
+
+  resize(){
+    var gameRatio = game.width/game.height;
+    var windowRatio = window.innerWidth/window.innerHeight;
+    if(gameRatio > windowRatio){
+      this.scale = window.innerWidth/game.width;
+      this.offsetY = (window.innerHeight-game.height*this.scale)/2;
+    } else {
+      this.scale = window.innerHeight/game.height;
+      this.offsetX = (window.innerWidth-game.width*this.scale)/2;
+    }
+
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
   }
 
   start(){
@@ -19,21 +33,20 @@ class Renderer {
   }
 
   zoomIn(){
-    this.zoom(0.1);
+    this.zoom(this.scaleFactor);
   }
 
   zoomOut(){
-    this.zoom(-0.1);
+    this.zoom(-this.scaleFactor);
   }
 
   zoom(value){
-    this.scale += value;
+    this.scale *= (1+value);
     var width = this.canvas.width/2;
     var height = this.canvas.height/2;
     var offsetX = this.offsetX;
     var offsetY = this.offsetY;
-    var scale = this.scale/(this.scale-value);
-
+    var scale = 1+value;
     this.offsetX = width-(width-offsetX)*scale;
     this.offsetY = height-(height-offsetY)*scale;
   }
@@ -46,9 +59,6 @@ class Renderer {
   render(){
     window.requestAnimationFrame(this.render.bind(this));
 
-    // var scale = this.scale;
-    // var offsetX = 0;
-    // var offsetY = 0;
     var context = this.context;
     var canvas = this.canvas;
 
@@ -56,13 +66,9 @@ class Renderer {
     context.fillRect(0, 0, canvas.width, canvas.height);
 
     context.save();
-
-    // context.scale(this.scale, this.scale, canvas.width/2, canvas.height/2);
-    //     context.translate(this.offsetX, this.offsetY);
-
     context.setTransform(this.scale, 0, 0, this.scale, this.offsetX, this.offsetY);
 
-    context.fillStyle = "#444";
+    context.fillStyle = "#363636";
     for(var bound of game.bounds){
       context.beginPath();
       context.moveTo(bound.vertices[0].x, bound.vertices[0].y);
@@ -88,7 +94,7 @@ class Renderer {
       // Draw think bar
       context.fillStyle = "#222";
       context.beginPath();
-      context.fillRect(10, canvas.height-20, (canvas.width-20)*game.thinkProgress, 10);
+      context.fillRect(10, game.height-20, (game.width-20)*game.thinkProgress, 10);
     }
 
     for(var planet of game.planets){

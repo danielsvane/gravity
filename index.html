@@ -23,7 +23,7 @@
     engine.world.gravity.y = 0;
     Engine.run(engine);
 
-    var game = new Game();
+    var game = new Game(1800, 1800);
     game.addPlanet(800, 600, 180);
     game.addPlanet(1000, 300, 100);
     //game.addPlanet(700, 100, 140);
@@ -50,6 +50,10 @@
       startX = e.clientX;
       startY = e.clientY;
     }
+
+    window.addEventListener("resize", function(){
+      renderer.resize();
+    });
 
     document.addEventListener("mouseup", function(){
       document.removeEventListener("mousemove", drag);

@@ -1,5 +1,5 @@
 class Game {
-  constructor(){
+  constructor(width, height){
     this.players = [];
     this.planets = [];
     this.bounds = [];
@@ -8,15 +8,17 @@ class Game {
     this.bulletTimeLimit = 500;
     this.thinkTime = 0;
     this.thinkTimeLimit = 1000;
+    this.width = width;
+    this.height = height;
 
     this.createBounds();
   }
 
   createBounds(){
-    this.createBound(5, window.innerHeight/2, 10, window.innerHeight);
-    this.createBound(window.innerWidth/2, 5, window.innerWidth, 10);
-    this.createBound(window.innerWidth-5, window.innerHeight/2, 10, window.innerHeight);
-    this.createBound(window.innerWidth/2, window.innerHeight-5, window.innerWidth, 10);
+    this.createBound(5, this.height/2, 10, this.height);
+    this.createBound(this.width/2, 5, this.width, 10);
+    this.createBound(this.width-5, this.height/2, 10, this.height);
+    this.createBound(this.width/2, this.height-5, this.width, 10);
   }
 
   createBound(x, y, width, height){
