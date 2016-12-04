@@ -89,7 +89,7 @@ class Renderer {
       // Draw bullet bar
       context.fillStyle = "#222";
       context.beginPath();
-      context.fillRect(10, canvas.height-20, (canvas.width-20)*game.bulletProgress, 10);
+      context.fillRect(10, game.height-20, (game.width-20)*game.bulletProgress, 10);
     } else {
       // Draw think bar
       context.fillStyle = "#222";

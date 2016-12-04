@@ -24,11 +24,13 @@
     Engine.run(engine);
 
     var game = new Game(1800, 1800);
-    game.addPlanet(800, 600, 180);
-    game.addPlanet(1000, 300, 100);
+    game.addPlanet(600, 900, 280);
+    game.addPlanet(1100, 500, 200);
+    game.addPlanet(800, 1500, 150);
     //game.addPlanet(700, 100, 140);
-    game.addPlayer(100, 400, "#2467cc");
-    game.addPlayer(1500, 400, "#d32626", Math.PI);
+    game.addPlayer(200, 1500, "#2467cc", Math.PI*-1/3);
+    game.addPlayer(1500, 1600, "#d32626", Math.PI*-2/3);
+    game.addPlayer(900, 200, "#29a909", Math.PI/2);
 
     document.addEventListener("wheel", function(e){
       if(e.deltaY < 0) renderer.zoomIn();
