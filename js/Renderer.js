@@ -1,6 +1,8 @@
 class Renderer {
   init(){
     this.scale = 1;
+    this.offsetX = 0;
+    this.offsetY = 0;
 
     var canvas = document.createElement('canvas');
     this.context = canvas.getContext('2d');
@@ -17,17 +19,28 @@ class Renderer {
   }
 
   zoomIn(){
-    //this.scale += 0.1;
-    this.context.scale(1.1, 1.1);
+    this.zoom(0.1);
   }
 
   zoomOut(){
-    this.context.scale(0.9, 0.9);
-    //this.scale -= 0.1;
+    this.zoom(-0.1);
+  }
+
+  zoom(value){
+    this.scale += value;
+    var width = this.canvas.width/2;
+    var height = this.canvas.height/2;
+    var offsetX = this.offsetX;
+    var offsetY = this.offsetY;
+    var scale = this.scale/(this.scale-value);
+
+    this.offsetX = width-(width-offsetX)*scale;
+    this.offsetY = height-(height-offsetY)*scale;
   }
 
   setOffset(x, y){
-    this.context.translate(x, y);
+    this.offsetX += x;
+    this.offsetY += y;
   }
 
   render(){
@@ -40,10 +53,14 @@ class Renderer {
     var canvas = this.canvas;
 
     context.fillStyle = '#333';
-    context.save();
-    context.setTransform(1, 0, 0, 1, 0, 0);
     context.fillRect(0, 0, canvas.width, canvas.height);
-    context.restore();
+
+    context.save();
+
+    // context.scale(this.scale, this.scale, canvas.width/2, canvas.height/2);
+    //     context.translate(this.offsetX, this.offsetY);
+
+    context.setTransform(this.scale, 0, 0, this.scale, this.offsetX, this.offsetY);
 
     context.fillStyle = "#444";
     for(var bound of game.bounds){
@@ -116,5 +133,7 @@ class Renderer {
       }
       context.globalAlpha = 1;
     }
+
+    context.restore();
   }
 }

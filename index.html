@@ -44,9 +44,9 @@
     });
 
     function drag(e){
-      var offsetX = e.clientX-startX;
-      var offsetY = e.clientY-startY;
-      renderer.setOffset(offsetX, offsetY);
+      renderer.offsetX += e.clientX-startX;
+      renderer.offsetY += e.clientY-startY;
+
       startX = e.clientX;
       startY = e.clientY;
     }
