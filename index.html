@@ -104,7 +104,7 @@
           var r = Vector.sub(planet.position, bullet.position);
           var mag = Vector.magnitude(r);
           var norm = Vector.normalise(r);
-          var force = Vector.mult(norm, planet.circleRadius*0.001/mag);
+          var force = Vector.mult(norm, planet.circleRadius*bullet.mass*0.0035/mag);
           Body.applyForce(bullet, bullet.position, force);
         }
 

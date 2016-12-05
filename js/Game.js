@@ -53,7 +53,7 @@ class Game {
     this.players.push(new Player(x, y, color, angle));
   }
 
-  addBullet(bulletRadius = 10){
+  addBullet(bulletRadius = 10, oppositeForce = false){
     if(!this.bullet){
       var player = this.currentPlayer;
       var body = player.body;
@@ -67,8 +67,7 @@ class Game {
       });
 
       Body.setInertia(bullet, Infinity);
-      //console.log(bullet.mass);
-      Body.setMass(bullet, 0.3);
+
       var vel = {
         x: 0.2*player.power*Math.cos(body.angle),
         y: 0.2*player.power*Math.sin(body.angle)
@@ -76,7 +75,7 @@ class Game {
 
       Body.setVelocity(bullet, vel);
 
-      //Body.setVelocity(player.body, Vector.neg(vel));
+      if(oppositeForce) Body.setVelocity(player.body, Vector.neg(vel));
 
       bullet.friction = 0.1;
       bullet.frictionAir = 0;
