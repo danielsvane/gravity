@@ -5,7 +5,7 @@ class Game {
     this.bounds = [];
     this.currentPlayerIndex = 0;
     this.bulletTime = 0;
-    this.bulletTimeLimit = 200;
+    this.bulletTimeLimit = 400;
     this.thinkTime = 0;
     this.thinkTimeLimit = 1000;
     this.waiting = false;
@@ -113,13 +113,13 @@ class Game {
 
   increasePower(){
     var player = this.currentPlayer;
-    player.power = player.power+10;
+    player.power = player.power+5;
     if(player.power > 100) player.power = 100;
   }
 
   decreasePower(){
     var player = this.currentPlayer;
-    player.power = player.power-10;
+    player.power = player.power-5;
     if(player.power < 0) player.power = 0;
   }
 

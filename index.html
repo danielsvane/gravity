@@ -24,11 +24,20 @@
     engine.world.gravity.y = 0;
     Engine.run(engine);
 
-    var game = new Game(1000, 1000);
-    game.addPlayer(100, 500, "#2467cc");
-    game.addPlayer(900, 500, "#d32626", Math.PI);
-    game.addPlanet(500, 500, 200);
+    // 2 PLAYER
+    var game = new Game(1600, 1600);
+    game.addPlayer(300, 300, "#2467cc");
+    game.addPlayer(1300, 1300, "#d32626", Math.PI);
+    game.addPlanet(700, 900, 250);
+    game.addPlanet(1000, 450, 150);
 
+    // SIMPLE 2 PLAYER
+    // var game = new Game(1000, 1000);
+    // game.addPlayer(100, 500, "#2467cc");
+    // game.addPlayer(900, 500, "#d32626", Math.PI);
+    // game.addPlanet(500, 500, 200);
+
+    // 3 PLAYER
     // var game = new Game(1800, 1800);
     // game.addPlanet(600, 900, 280);
     // game.addPlanet(1100, 500, 200);
@@ -70,10 +79,10 @@
     document.body.onkeydown = function(e){
       if(!game.waiting){
         if(e.key == "ArrowLeft"){
-          Body.rotate(game.currentPlayer.body, -Math.PI/30);
+          Body.rotate(game.currentPlayer.body, -Math.PI/60);
         }
         if(e.key == "ArrowRight"){
-          Body.rotate(game.currentPlayer.body, Math.PI/30);
+          Body.rotate(game.currentPlayer.body, Math.PI/60);
         }
         if(e.key == "ArrowUp"){
           game.increasePower();
@@ -104,7 +113,7 @@
           var r = Vector.sub(planet.position, bullet.position);
           var mag = Vector.magnitude(r);
           var norm = Vector.normalise(r);
-          var force = Vector.mult(norm, planet.circleRadius*bullet.mass*0.0035/mag);
+          var force = Vector.mult(norm, planet.circleRadius*bullet.mass*0.0025/mag);
           Body.applyForce(bullet, bullet.position, force);
         }
 

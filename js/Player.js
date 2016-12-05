@@ -1,6 +1,6 @@
 class Player {
   constructor(x, y, color, angle){
-    this.lives = 1;
+    this.lives = 3;
     this.color = color;
     this.power = 50;
     this.abilities = [];

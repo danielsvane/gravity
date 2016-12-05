@@ -63,7 +63,7 @@ class BigAbility extends Ability {
     context.fill();
   }
   fire(){
-    game.addBullet(30, true);
+    game.addBullet(50, true);
     this.putOnCooldown();
   }
 }
