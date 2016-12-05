@@ -1,9 +1,9 @@
 class Ability {
   constructor(){
-    this.cooldownRemain = 1;
+    this.cooldownRemain = 0;
   }
   decreaseCooldown(){
-    if(this.cooldownRemain > 1) this.cooldownRemain--;
+    if(this.cooldownRemain > 0) this.cooldownRemain--;
   }
   putOnCooldown(){
     this.cooldownRemain = this.cooldown;
@@ -30,14 +30,14 @@ class Ability {
     context.fillText(this.cooldownRemain, x+50, y+63);
   }
   get isOnCooldown(){
-    return (this.cooldownRemain > 1);
+    return (this.cooldownRemain > 0);
   }
 }
 
 class NormalAbility extends Ability {
   constructor(){
     super();
-    this.cooldown = 1;
+    this.cooldown = 0;
   }
   renderAbility(context, x, y){
     context.fillStyle = game.currentPlayer.color;
@@ -54,7 +54,7 @@ class NormalAbility extends Ability {
 class BigAbility extends Ability {
   constructor(){
     super();
-    this.cooldown = 5;
+    this.cooldown = 2;
   }
   renderAbility(context, x, y){
     context.fillStyle = game.currentPlayer.color;

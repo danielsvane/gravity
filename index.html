@@ -68,27 +68,32 @@
     });
 
     document.body.onkeydown = function(e){
-      //console.log(e);
-      if(e.key == "ArrowLeft"){
-        Body.rotate(game.currentPlayer.body, -Math.PI/30);
-      }
-      if(e.key == "ArrowRight"){
-        Body.rotate(game.currentPlayer.body, Math.PI/30);
-      }
-      if(e.key == "ArrowUp"){
-        game.increasePower();
-      }
-      if(e.key == "ArrowDown"){
-        game.decreasePower();
-      }
-      if(e.keyCode == 32){
-        game.currentPlayer.currentAbility.fire();
-      }
-      if(e.key == "1"){
-        game.currentPlayer.currentAbilityIndex = 0;
-      }
-      if(e.key == "2"){
-        game.currentPlayer.currentAbilityIndex = 1;
+      if(!game.waiting){
+        if(e.key == "ArrowLeft"){
+          Body.rotate(game.currentPlayer.body, -Math.PI/30);
+        }
+        if(e.key == "ArrowRight"){
+          Body.rotate(game.currentPlayer.body, Math.PI/30);
+        }
+        if(e.key == "ArrowUp"){
+          game.increasePower();
+        }
+        if(e.key == "ArrowDown"){
+          game.decreasePower();
+        }
+        if(e.keyCode == 32){
+          game.fire();
+        }
+        if(e.key == "1"){
+          var index = 0;
+          var player = game.currentPlayer;
+          if(!player.abilities[index].isOnCooldown) player.currentAbilityIndex = index;
+        }
+        if(e.key == "2"){
+          var index = 1;
+          var player = game.currentPlayer;
+          if(!player.abilities[index].isOnCooldown) player.currentAbilityIndex = index;
+        }
       }
     }
 

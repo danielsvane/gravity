@@ -32,6 +32,11 @@ class Player {
     this.abilities.push(ability);
   }
 
+  fire(){
+    this.currentAbility.fire();
+    this.currentAbilityIndex = 0;
+  }
+
   get currentAbility(){
     return this.abilities[this.currentAbilityIndex];
   }

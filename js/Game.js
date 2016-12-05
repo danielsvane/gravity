@@ -5,9 +5,10 @@ class Game {
     this.bounds = [];
     this.currentPlayerIndex = 0;
     this.bulletTime = 0;
-    this.bulletTimeLimit = 500;
+    this.bulletTimeLimit = 200;
     this.thinkTime = 0;
     this.thinkTimeLimit = 1000;
+    this.waiting = false;
     this.width = width;
     this.height = height;
 
@@ -98,7 +99,6 @@ class Game {
   }
 
   nextPlayer(){
-    this.decreaseCooldowns();
     if(this.currentPlayerIndex < this.players.length-1){
       this.currentPlayerIndex++;
     } else {
@@ -126,9 +126,16 @@ class Game {
 
   endTurn(){
     if(this.bullet) this.removeBullet();
-    this.nextPlayer();
+    this.decreaseCooldowns();
     this.bulletTime = 0;
     this.thinkTime = 0;
+    this.waiting = false;
+    this.nextPlayer();
+  }
+
+  fire(){
+    this.waiting = true;
+    this.currentPlayer.fire();
   }
 
   get thinkProgress(){
