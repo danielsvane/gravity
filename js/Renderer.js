@@ -68,15 +68,17 @@ class Renderer {
 
 
     // Draw the abilities
-    for(var [i, ability] of game.currentPlayer.abilities.entries()){
-      if(i == game.currentPlayer.currentAbilityIndex){
-        context.strokeStyle = "#999";
-        context.lineWidth = 5;
-      } else {
-        context.strokeStyle = "#333";
-        context.lineWidth = 1;
+    if(game.currentPlayer){
+      for(var [i, ability] of game.currentPlayer.abilities.entries()){
+        if(i == game.currentPlayer.currentAbilityIndex){
+          context.strokeStyle = "#999";
+          context.lineWidth = 5;
+        } else {
+          context.strokeStyle = "#333";
+          context.lineWidth = 1;
+        }
+        ability.render(context, 10, 10+110*i);
       }
-      ability.render(context, 10, 10+110*i);
     }
 
     context.save();
@@ -146,7 +148,7 @@ class Renderer {
       context.lineWidth = 2;
       if(player === game.currentPlayer) context.globalAlpha = 1;
       else context.globalAlpha = 0.5;
-      for(var i=0; i<player.lives-2; i++){
+      for(var i=0; i<player.lives; i++){
         context.beginPath();
         context.arc(body.position.x, body.position.y, body.circleRadius+4*(i+1)-1, 2*Math.PI, false);
         context.stroke();

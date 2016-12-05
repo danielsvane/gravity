@@ -140,7 +140,8 @@
       // Find the player hit, and decrease lives
       for(var player of game.players){
         if(player.body.id == body.id){
-          player.lives--;
+          player.hit();
+          //player.lives--;
           break;
         }
       }

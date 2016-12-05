@@ -1,6 +1,6 @@
 class Player {
   constructor(x, y, color, angle){
-    this.lives = 5;
+    this.lives = 1;
     this.color = color;
     this.power = 50;
     this.abilities = [];
@@ -35,6 +35,21 @@ class Player {
   fire(){
     this.currentAbility.fire();
     this.currentAbilityIndex = 0;
+  }
+
+  hit(){
+    this.lives--;
+    console.log(this.id);
+    if(this.lives < 0){
+      console.log("lol");
+      World.remove(engine.world, this.body);
+      for(var i in game.players){
+        var player = game.players[i];
+        if(player === this){
+          game.players.splice(i, 1);
+        }
+      }
+    }
   }
 
   get currentAbility(){
