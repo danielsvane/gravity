@@ -52,9 +52,8 @@ class Game {
     this.players.push(new Player(x, y, color, angle));
   }
 
-  addBullet(){
+  addBullet(bulletRadius = 10){
     if(!this.bullet){
-      var bulletRadius = 10;
       var player = this.currentPlayer;
       var body = player.body;
       var x = body.position.x+(body.circleRadius+bulletRadius)*Math.cos(body.angle);
@@ -67,7 +66,8 @@ class Game {
       });
 
       Body.setInertia(bullet, Infinity);
-      //Body.setMass(bullet, 40);
+      //console.log(bullet.mass);
+      Body.setMass(bullet, 0.3);
       var vel = {
         x: 0.2*player.power*Math.cos(body.angle),
         y: 0.2*player.power*Math.sin(body.angle)
@@ -75,7 +75,7 @@ class Game {
 
       Body.setVelocity(bullet, vel);
 
-      Body.setVelocity(player.body, Vector.neg(vel));
+      //Body.setVelocity(player.body, Vector.neg(vel));
 
       bullet.friction = 0.1;
       bullet.frictionAir = 0;
@@ -98,10 +98,17 @@ class Game {
   }
 
   nextPlayer(){
+    this.decreaseCooldowns();
     if(this.currentPlayerIndex < this.players.length-1){
       this.currentPlayerIndex++;
     } else {
       this.currentPlayerIndex = 0;
+    }
+  }
+
+  decreaseCooldowns(){
+    for(var ability of this.currentPlayer.abilities){
+      ability.decreaseCooldown();
     }
   }
 

@@ -63,7 +63,21 @@ class Renderer {
     var canvas = this.canvas;
 
     context.fillStyle = '#333';
+    context.beginPath();
     context.fillRect(0, 0, canvas.width, canvas.height);
+
+
+    // Draw the abilities
+    for(var [i, ability] of game.currentPlayer.abilities.entries()){
+      if(i == game.currentPlayer.currentAbilityIndex){
+        context.strokeStyle = "#999";
+        context.lineWidth = 5;
+      } else {
+        context.strokeStyle = "#333";
+        context.lineWidth = 1;
+      }
+      ability.render(context, 10, 10+110*i);
+    }
 
     context.save();
     context.setTransform(this.scale, 0, 0, this.scale, this.offsetX, this.offsetY);

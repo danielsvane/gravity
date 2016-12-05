@@ -5,6 +5,7 @@
     <script src="js/Game.js"></script>
     <script src="js/Player.js"></script>
     <script src="js/Renderer.js"></script>
+    <script src="js/Ability.js"></script>
   </head>
   <body>
     <script>
@@ -67,6 +68,7 @@
     });
 
     document.body.onkeydown = function(e){
+      //console.log(e);
       if(e.key == "ArrowLeft"){
         Body.rotate(game.currentPlayer.body, -Math.PI/30);
       }
@@ -80,7 +82,13 @@
         game.decreasePower();
       }
       if(e.keyCode == 32){
-        game.addBullet();
+        game.currentPlayer.currentAbility.fire();
+      }
+      if(e.key == "1"){
+        game.currentPlayer.currentAbilityIndex = 0;
+      }
+      if(e.key == "2"){
+        game.currentPlayer.currentAbilityIndex = 1;
       }
     }
 

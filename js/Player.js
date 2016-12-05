@@ -3,6 +3,8 @@ class Player {
     this.lives = 5;
     this.color = color;
     this.power = 50;
+    this.abilities = [];
+    this.currentAbilityIndex = 0;
 
     var body = Bodies.circle(x, y, 20, {
       collisionFilter: {
@@ -21,5 +23,16 @@ class Player {
     //Body.setMass(player, 1);
     World.add(engine.world, body);
     this.body = body;
+
+    this.addAbility(new NormalAbility());
+    this.addAbility(new BigAbility());
+  }
+
+  addAbility(ability){
+    this.abilities.push(ability);
+  }
+
+  get currentAbility(){
+    return this.abilities[this.currentAbilityIndex];
   }
 }
