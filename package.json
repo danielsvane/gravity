@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack",
-    "dev": "nodemon --exec babel-node src/server/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npm-run-all --parallel watch:server watch:build",
+    "watch:build": "webpack --watch",
+    "watch:server": "nodemon dist/server.js"
   },
   "repository": {
     "type": "git",
@@ -21,7 +21,8 @@
   "dependencies": {
     "express": "^4.14.0",
     "matter-js": "^0.11.1",
-    "socket.io": "^1.7.1"
+    "socket.io": "^1.7.1",
+    "socket.io-client": "^1.7.1"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",

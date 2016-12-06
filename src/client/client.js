@@ -1,3 +1,4 @@
-import Game from "../shared/game";
+import ClientGame from "../client/ClientGame";
 
-console.log("client");
+let game = new ClientGame();
+game.start();
