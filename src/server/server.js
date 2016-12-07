@@ -26,7 +26,11 @@ io.on('connection', function (socket) {
   socket.on("rotated", function(angle){
     let player = game.player(socket.id);
     player.rotate(angle);
-    socket.broadcast.emit("rotate player", player.socketId, angle);
+    socket.broadcast.emit("rotate player", player.socketId, player.body.angle);
+  });
+
+  socket.on("player shot", function(){
+    socket.broadcast.emit("player shot", socket.id);
   });
 
   socket.on("disconnect", function(){
