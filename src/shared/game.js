@@ -8,15 +8,26 @@ export default class Game {
     this.engine.world.gravity.y = 0;
     this.stepInterval = undefined;
     this.players = [];
+    this.spots = [{
+      x: 100,
+      y: 300,
+    },{
+      x: 700,
+      y: 300
+    }];
 
     let planet = Matter.Bodies.circle(400, 300, 150, {isStatic: true});
     Matter.World.add(this.engine.world, planet);
 
-    this.addPlayer(100, 300);
+    //this.addPlayer(100, 300);
   }
 
-  addPlayer(x, y){
-    this.players.push(new Player(this.engine, x, y));
+  player(socketId){
+    for(let player of this.players){
+      if(player.socketId == socketId){
+        return player;
+      }
+    }
   }
 
   start(){

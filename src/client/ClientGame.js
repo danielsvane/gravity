@@ -1,7 +1,6 @@
 import Game from "../shared/Game";
+import Player from "../shared/Player";
 import Matter from "matter-js";
-import io from "socket.io-client";
-
 export default class ClientGame extends Game {
 
   constructor(){
@@ -13,12 +12,6 @@ export default class ClientGame extends Game {
         showAngleIndicator: true
       }
     });
-    this.addEvents();
-    this.setupIO();
-  }
-
-  setupIO(){
-    this.socket = io("http://localhost");
   }
 
   step(){
@@ -26,17 +19,18 @@ export default class ClientGame extends Game {
     Matter.Render.world(this.render);
   }
 
-  addEvents(){
-    document.addEventListener("keydown", this.handleKeyboardEvents.bind(this));
+  addPlayer(spotIndex, socketId){
+    let spot = this.spots[spotIndex];
+    this.players.push(new Player(this.engine, spot.x, spot.y, spotIndex, socketId));
   }
 
-  handleKeyboardEvents(e){
-    if(e.key === "ArrowLeft"){
-      this.players[0].rotate(-Math.PI/30);
-      this.socket.emit("rotated", -Math.PI/30);
-    }
-    if(e.key === "ArrowRight"){
-      this.players[0].rotate(Math.PI/30);
+  removePlayer(spot){
+    for(let i in this.players){
+      let player = this.players[i];
+      if(player.spot === spot){
+        Matter.World.remove(this.engine.world, player.body);
+        this.players.splice(i, 1);
+      }
     }
   }
 
