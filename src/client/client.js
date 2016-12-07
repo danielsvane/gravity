@@ -34,8 +34,12 @@ document.addEventListener("keydown", function(e){
     socket.emit("rotated", Math.PI/30);
   }
   if(e.key === " "){
-    console.log("asdasd");
+    console.log(game.player(socket.id).bullets[0]);
     game.player(socket.id).shoot();
     socket.emit("player shot");
+  }
+  if(e.key === "s"){
+    console.log("getting state");
+    socket.emit("get state");
   }
 });

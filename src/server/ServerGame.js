@@ -1,5 +1,6 @@
 import Game from "../shared/Game";
 import Player from "../shared/Player";
+import Helper from "../shared/Helper";
 import Matter from "matter-js";
 
 export default class ServerGame extends Game {
@@ -28,5 +29,24 @@ export default class ServerGame extends Game {
     }
   }
 
+  get state(){
+    let stateObj = {};
+
+    // Get state of players
+    stateObj.players = [];
+    for(let player of this.players){
+      let playerObj = Helper.bodyState(player.body);
+      playerObj.socketId = player.socketId;
+      playerObj.bullets = [];
+
+      for(let bullet of player.bullets){
+        let bulletObj = Helper.bodyState(bullet);
+        playerObj.bullets.push(bulletObj);
+      }
+      stateObj.players.push(playerObj);
+    }
+
+    console.log(stateObj);
+  }
 
 }

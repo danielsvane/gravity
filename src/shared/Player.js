@@ -30,7 +30,7 @@ export default class Player {
       y: 10*Math.sin(body.angle)
     }
 
-    // Matter.Body.setInertia(bullet, Infinity);
+    //Matter.Body.setInertia(bullet, Infinity);
     Matter.Body.setVelocity(bullet, vel);
 
     // bullet.friction = 0.1;

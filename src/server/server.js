@@ -29,8 +29,13 @@ io.on('connection', function (socket) {
     socket.broadcast.emit("rotate player", player.socketId, player.body.angle);
   });
 
+  socket.on("get state", function(){
+    game.state;
+  });
+
   socket.on("player shot", function(){
     socket.broadcast.emit("player shot", socket.id);
+    io.sockets.emit("game state", game.state);
   });
 
   socket.on("disconnect", function(){
