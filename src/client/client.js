@@ -1,5 +1,4 @@
 import ClientGame from "../client/ClientGame";
-//import io from "socket.io-client";
 
 let game = new ClientGame();
 game.start();
@@ -24,7 +23,7 @@ document.addEventListener("keydown", function(e){
     socket.emit("player rotate", Math.PI/30);
   }
   if(e.key === " "){
-    game.player(socket.id).shoot();
+    //game.player(socket.id).shoot();
     socket.emit("player shoot");
   }
 });

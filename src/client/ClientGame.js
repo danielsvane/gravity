@@ -40,7 +40,6 @@ export default class ClientGame extends Game {
     for(let playerObj of stateObj.players){
       this.addPlayer(playerObj);
     }
-    console.log(Matter.Composite.allBodies(this.engine.world).length);
   }
 
 }

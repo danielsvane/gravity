@@ -69,8 +69,8 @@ export default class Player {
     let x = body.position.x+(body.circleRadius+bulletRadius)*Math.cos(body.angle);
     let y = body.position.y+(body.circleRadius+bulletRadius)*Math.sin(body.angle);
     let velocity = {
-      x: 10*Math.cos(body.angle),
-      y: 10*Math.sin(body.angle)
+      x: 7*Math.cos(body.angle),
+      y: 7*Math.sin(body.angle)
     }
 
     this.addBullet(x, y, velocity);

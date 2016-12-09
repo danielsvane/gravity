@@ -3,11 +3,11 @@ import Player from "../shared/Player";
 
 export default class Game {
 
-  constructor(){
+  constructor(interval = 33){
     this.engine = Matter.Engine.create();
     this.engine.world.gravity.y = 0;
     this.stepInterval = undefined;
-    this.interval = 40;
+    this.interval = interval;
     this.expected = Date.now()+this.interval;
     this.players = [];
     this.planets = [];
@@ -58,12 +58,12 @@ export default class Game {
           var r = Matter.Vector.sub(planet.position, bullet.position);
           var mag = Matter.Vector.magnitude(r);
           var norm = Matter.Vector.normalise(r);
-          var force = Matter.Vector.mult(norm, planet.circleRadius*bullet.mass*0.0025/mag);
+          var force = Matter.Vector.mult(norm, planet.circleRadius*bullet.mass*0.0003/mag);
           Matter.Body.applyForce(bullet, bullet.position, force);
         }
       }
     }
-    Matter.Engine.update(this.engine);
+    Matter.Engine.update(this.engine, this.interval);
 
     this.expected += this.interval;
     setTimeout(this.step.bind(this), this.interval-dt);
