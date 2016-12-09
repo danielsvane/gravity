@@ -4,8 +4,8 @@
   "description": "",
   "main": "web.js",
   "scripts": {
+    "heroku-postbuild": "webpack -p --config ./webpack.config.babel.js --progress",
     "start": "node dist/server.js",
-    "build": "webpack",
     "dev": "npm-run-all --parallel watch:server watch:build",
     "watch:build": "webpack --watch",
     "watch:server": "nodemon dist/server.js"
