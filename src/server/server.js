@@ -9,7 +9,7 @@ let app = express();
 let server = http.Server(app);
 let io = ioFactory(server);
 
-server.listen(3000);
+server.listen(process.env.PORT || 80);
 app.use(express.static('dist'));
 
 let game = new Game(io);
