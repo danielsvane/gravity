@@ -63,10 +63,23 @@ export default class Game {
         }
       }
     }
+    this.checkBulletTime();
     Matter.Engine.update(this.engine, this.interval);
 
     this.expected += this.interval;
     setTimeout(this.step.bind(this), this.interval-dt);
+  }
+
+  checkBulletTime(){
+    for(let player of this.players){
+      for(let i in player.bullets){
+        let bullet = player.bullets[i];
+        bullet.time--;
+        if(bullet.time < 0){
+          player.removeBullet(i);
+        }
+      }
+    }
   }
 
   setupCollisionEvents(){

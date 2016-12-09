@@ -54,8 +54,11 @@ export default class Player {
     let bullet = Matter.Bodies.circle(x, y, bulletRadius, {
       label: "bullet",
       frictionAir: 0,
-      restitution: 1
+      restitution: 0.9
     });
+
+    bullet.time = 500;
+    console.log(bullet.time);
 
     Matter.Body.setInertia(bullet, Infinity);
     Matter.Body.setVelocity(bullet, velocity);
