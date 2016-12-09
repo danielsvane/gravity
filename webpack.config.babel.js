@@ -5,7 +5,7 @@ console.log(path.join(__dirname, "src"));
 
 export default [
   {
-    entry: ["./src/client/client.js", "./src/shared/Game.js"],
+    entry: "./src/client/client.js",
     output: {
       filename: "./dist/client.min.js"
     },
