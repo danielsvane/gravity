@@ -1,13 +1,10 @@
 import webpack from "webpack";
 import path from "path";
 
+console.log(path.join(__dirname, "src"));
+
 export default [
   {
-    resolve: {
-      root: [
-        path.resolve('./src')
-      ]
-    },
     entry: "./src/client/client.js",
     output: {
       filename: "./dist/client.min.js"
@@ -17,7 +14,8 @@ export default [
         {
           test: /\.js$/,
           exclude: /node_modules/,
-          loader: "babel-loader"
+          loader: "babel-loader",
+          include: path.join(__dirname, "src")
         }
       ]
     }
