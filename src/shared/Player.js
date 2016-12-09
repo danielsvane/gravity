@@ -5,6 +5,8 @@ export default class Player {
     this.engine = engine;
     this.socketId = socketId;
     this.spot = spot;
+    this.health = 3;
+    this.power = 0.5;
     this.bullets = [];
 
     let body = Matter.Bodies.circle(x, y, 30);
@@ -17,6 +19,8 @@ export default class Player {
     Matter.Body.setInertia(body, Infinity);
 
     if(settings){
+      this.health = settings.health;
+      this.power = settings.power;
       body.positionImpulse = settings.positionImpulse;
       Matter.Body.setVelocity(body, settings.velocity);
       Matter.Body.setAngle(body, settings.angle);
@@ -30,9 +34,19 @@ export default class Player {
     }
   }
 
+  increasePower(){
+    this.power += 0.05;
+    if(this.power > 1) this.power = 1;
+  }
+
+  decreasePower(){
+    this.power -= 0.05;
+    if(this.power < 0) this.power = 0;
+  }
+
   addBullets(bulletsObj){
     for(let bulletObj of bulletsObj){
-      this.addBullet(bulletObj.x, bulletObj.y, bulletObj.velocity);
+      this.addBullet(bulletObj.x, bulletObj.y, bulletObj.velocity, bulletObj.time);
     }
   }
 
@@ -49,16 +63,19 @@ export default class Player {
     this.bullets.splice(i, 1);
   }
 
-  addBullet(x, y, velocity){
+  addBullet(x, y, velocity, time = 400){
     let bulletRadius = 10;
     let bullet = Matter.Bodies.circle(x, y, bulletRadius, {
       label: "bullet",
       frictionAir: 0,
-      restitution: 0.9
+      restitution: 0.9,
+      collisionFilter: {
+        category: 0x0001,
+        mask: 0x0001
+      }
     });
 
-    bullet.time = 500;
-    console.log(bullet.time);
+    bullet.time = time;
 
     Matter.Body.setInertia(bullet, Infinity);
     Matter.Body.setVelocity(bullet, velocity);
@@ -72,8 +89,8 @@ export default class Player {
     let x = body.position.x+(body.circleRadius+bulletRadius)*Math.cos(body.angle);
     let y = body.position.y+(body.circleRadius+bulletRadius)*Math.sin(body.angle);
     let velocity = {
-      x: 7*Math.cos(body.angle),
-      y: 7*Math.sin(body.angle)
+      x: this.power*20*Math.cos(body.angle),
+      y: this.power*20*Math.sin(body.angle)
     }
 
     this.addBullet(x, y, velocity);

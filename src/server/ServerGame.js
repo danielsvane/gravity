@@ -44,6 +44,8 @@ export default class ServerGame extends Game {
         y: player.body.position.y,
         spot: player.spot,
         settings: {
+          power: player.power,
+          health: player.health,
           positionImpulse: player.body.positionImpulse,
           velocity: player.body.velocity,
           angle: player.body.angle
@@ -55,7 +57,8 @@ export default class ServerGame extends Game {
         let bulletObj = {
           x: bullet.position.x,
           y: bullet.position.y,
-          velocity: bullet.velocity
+          velocity: bullet.velocity,
+          time: bullet.time
         }
         playerObj.bullets.push(bulletObj);
       }

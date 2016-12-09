@@ -29,7 +29,19 @@ io.on('connection', function (socket) {
     game.player(socket.id).shoot();
     io.sockets.emit("game state", game.getState());
   });
-  //
+
+  socket.on("player increase power", function(){
+    let player = game.player(socket.id);
+    player.increasePower();
+    socket.broadcast.emit("player set power", player.socketId, player.power);
+  });
+
+  socket.on("player decrease power", function(){
+    let player = game.player(socket.id);
+    player.decreasePower();
+    socket.broadcast.emit("player set power", player.socketId, player.power);
+  });
+
   socket.on("disconnect", function(){
     game.removePlayer(socket.id);
     io.sockets.emit("game state", game.getState());

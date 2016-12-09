@@ -1,26 +1,29 @@
 import Game from "../shared/Game";
 import Player from "../shared/Player";
+import Render from "../client/Render";
 import Matter from "matter-js";
 export default class ClientGame extends Game {
 
   constructor(){
     super();
-    this.render = Matter.Render.create({
-      element: document.body,
-      engine: this.engine,
-      options: {
-        showAngleIndicator: true
-      }
-    });
+    this.render = new Render(this);
+    // this.render = Matter.Render.create({
+    //   element: document.body,
+    //   engine: this.engine,
+    //   options: {
+    //     showAngleIndicator: true
+    //   }
+    // });
   }
 
   step(){
     super.step();
-    Matter.Render.world(this.render);
+    this.render.render();
+    //Matter.Render.world(this.render);
   }
 
   addPlayer(playerObj){
-    let player = new Player(this.engine, playerObj.x, playerObj.y, 0, playerObj.socketId, playerObj.settings, playerObj.bullets);
+    let player = new Player(this.engine, playerObj.x, playerObj.y, playerObj.spot, playerObj.socketId, playerObj.settings, playerObj.bullets);
     this.players.push(player);
   }
 

@@ -35,17 +35,17 @@ class Game {
   }
 
   addPlanet(x, y, radius){
-    var planet = Bodies.circle(x, y, radius, {
+    var planet = Matter.Bodies.circle(x, y, radius, {
       collisionFilter: {
         category: 0x0001
       }
     });
-    Body.setStatic(planet, true);
+    Matter.Body.setStatic(planet, true);
     planet.restitution = 1;
     planet.friction = 0.05;
     planet.frictionAir = 0;
     planet.frictionStatic = 0;
-    World.add(engine.world, planet);
+    Game.World.add(this.engine.world, planet);
     this.planets.push(planet);
   }
 

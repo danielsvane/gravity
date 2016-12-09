@@ -9,21 +9,60 @@ export default class Game {
     this.stepInterval = undefined;
     this.interval = interval;
     this.expected = Date.now()+this.interval;
+    this.width = 1000;
+    this.height = 1000;
     this.players = [];
     this.planets = [];
+    this.bounds = [];
     this.spots = [{
-      x: 100,
-      y: 300,
+      x: 150,
+      y: 150,
+      color: "#2467cc"
     },{
-      x: 700,
-      y: 300
+      x: 850,
+      y: 850,
+      color: "#d32626"
     }];
 
-    let planet = Matter.Bodies.circle(400, 300, 150, {isStatic: true});
+    this.addPlanet(550, 450, 170);
+    this.addPlanet(250, 700, 120);
+
+    this.createBounds();
+    this.setupCollisionEvents();
+  }
+
+  addPlanet(x, y, radius){
+    var planet = Matter.Bodies.circle(x, y, radius, {
+      collisionFilter: {
+        category: 0x0001
+      }
+    });
+    Matter.Body.setStatic(planet, true);
+    planet.restitution = 1;
+    planet.friction = 0.05;
+    planet.frictionAir = 0;
+    planet.frictionStatic = 0;
     Matter.World.add(this.engine.world, planet);
     this.planets.push(planet);
+  }
 
-    this.setupCollisionEvents();
+  createBounds(){
+    this.createBound(5, this.height/2, 10, this.height);
+    this.createBound(this.width/2, 5, this.width, 10);
+    this.createBound(this.width-5, this.height/2, 10, this.height);
+    this.createBound(this.width/2, this.height-5, this.width, 10);
+  }
+
+  createBound(x, y, width, height){
+    let bound = Matter.Bodies.rectangle(x, y, width, height, {
+      isStatic: true,
+      collisionFilter: {
+        category: 0x0002
+      }
+    });
+
+    Matter.World.add(this.engine.world, bound);
+    this.bounds.push(bound);
   }
 
   player(socketId){
@@ -58,7 +97,7 @@ export default class Game {
           var r = Matter.Vector.sub(planet.position, bullet.position);
           var mag = Matter.Vector.magnitude(r);
           var norm = Matter.Vector.normalise(r);
-          var force = Matter.Vector.mult(norm, planet.circleRadius*bullet.mass*0.0003/mag);
+          var force = Matter.Vector.mult(norm, planet.circleRadius*bullet.mass*0.001/mag);
           Matter.Body.applyForce(bullet, bullet.position, force);
         }
       }
