@@ -4,7 +4,7 @@
   "description": "",
   "main": "web.js",
   "scripts": {
-    "heroku-postbuild": "webpack -p --config ./webpack.config.babel.js --progress --display-error-details",
+    "heroku-postbuild": "webpack --progress --display-error-details",
     "start": "node dist/server.js",
     "dev": "npm-run-all --parallel watch:server watch:build",
     "watch:build": "webpack --watch",
