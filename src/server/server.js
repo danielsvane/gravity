@@ -1,6 +1,7 @@
 import http from "http";
 import express from "express";
 import path from "path";
+import Matter from "matter-js";
 import Game from "../server/ServerGame";
 import ioFactory from "socket.io";
 
@@ -11,36 +12,27 @@ let io = ioFactory(server);
 server.listen(80);
 app.use(express.static('dist'));
 
-let game = new Game();
+let game = new Game(io);
+game.start();
 
 io.on('connection', function (socket) {
-  // Broadcast current players in the game before joining
-  for(let player of game.players){
-    socket.emit("add player", player.spot, player.socketId);
-  }
+  game.addPlayer(socket.id);
+  io.sockets.emit("game state", game.getState());
 
-  let spot = game.addPlayer(socket.id);
-
-  io.sockets.emit("add player", spot, socket.id);
-
-  socket.on("rotated", function(angle){
+  socket.on("player rotate", function(angle){
     let player = game.player(socket.id);
     player.rotate(angle);
-    socket.broadcast.emit("rotate player", player.socketId, player.body.angle);
+    socket.broadcast.emit("player rotate", player.socketId, player.body.angle);
   });
 
-  socket.on("get state", function(){
-    game.state;
+  socket.on("player shoot", function(){
+    game.player(socket.id).shoot();
+    io.sockets.emit("game state", game.getState());
   });
-
-  socket.on("player shot", function(){
-    socket.broadcast.emit("player shot", socket.id);
-    io.sockets.emit("game state", game.state);
-  });
-
+  //
   socket.on("disconnect", function(){
-    let spot = game.removePlayer(socket.id);
-    io.sockets.emit("remove player", spot);
+    game.removePlayer(socket.id);
+    io.sockets.emit("game state", game.getState());
   });
 });
 

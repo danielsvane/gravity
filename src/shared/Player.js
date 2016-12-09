@@ -1,13 +1,39 @@
 import Matter from "matter-js";
 
 export default class Player {
-  constructor(engine, x, y, spot, socketId){
+  constructor(engine, x, y, spot, socketId, settings = undefined, bullets = undefined){
     this.engine = engine;
     this.socketId = socketId;
     this.spot = spot;
-    this.body = Matter.Bodies.circle(x, y, 30);
     this.bullets = [];
+
+    let body = Matter.Bodies.circle(x, y, 30);
+    body.label = "player";
+    body.restitution = 1;
+    body.friction = 0;
+    body.frictionAir = 0.05;
+    body.frictionStatic = 0;
+
+    Matter.Body.setInertia(body, Infinity);
+
+    if(settings){
+      body.positionImpulse = settings.positionImpulse;
+      Matter.Body.setVelocity(body, settings.velocity);
+      Matter.Body.setAngle(body, settings.angle);
+    }
+
+    this.body = body;
     Matter.World.add(engine.world, this.body);
+
+    if(bullets){
+      this.addBullets(bullets);
+    }
+  }
+
+  addBullets(bulletsObj){
+    for(let bulletObj of bulletsObj){
+      this.addBullet(bulletObj.x, bulletObj.y, bulletObj.velocity);
+    }
   }
 
   rotate(angle){
@@ -18,27 +44,35 @@ export default class Player {
     Matter.Body.setAngle(this.body, angle);
   }
 
+  removeBullet(i){
+    Matter.World.remove(this.engine.world, this.bullets[i]);
+    this.bullets.splice(i, 1);
+  }
+
+  addBullet(x, y, velocity){
+    let bulletRadius = 10;
+    let bullet = Matter.Bodies.circle(x, y, bulletRadius, {
+      label: "bullet",
+      frictionAir: 0,
+      restitution: 1
+    });
+
+    Matter.Body.setInertia(bullet, Infinity);
+    Matter.Body.setVelocity(bullet, velocity);
+    Matter.World.add(this.engine.world, bullet);
+    this.bullets.push(bullet);
+  }
+
   shoot(){
     let bulletRadius = 10;
     let body = this.body;
     let x = body.position.x+(body.circleRadius+bulletRadius)*Math.cos(body.angle);
     let y = body.position.y+(body.circleRadius+bulletRadius)*Math.sin(body.angle);
-    let bullet = Matter.Bodies.circle(x, y, bulletRadius);
-
-    let vel = {
+    let velocity = {
       x: 10*Math.cos(body.angle),
       y: 10*Math.sin(body.angle)
     }
 
-    //Matter.Body.setInertia(bullet, Infinity);
-    Matter.Body.setVelocity(bullet, vel);
-
-    // bullet.friction = 0.1;
-    bullet.frictionAir = 0;
-    // bullet.frictionStatic = 0;
-    bullet.restitution = 1;
-
-    Matter.World.add(this.engine.world, bullet);
-    this.bullets.push(bullet);
+    this.addBullet(x, y, velocity);
   }
 }

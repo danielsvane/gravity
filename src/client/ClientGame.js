@@ -19,19 +19,28 @@ export default class ClientGame extends Game {
     Matter.Render.world(this.render);
   }
 
-  addPlayer(spotIndex, socketId){
-    let spot = this.spots[spotIndex];
-    this.players.push(new Player(this.engine, spot.x, spot.y, spotIndex, socketId));
+  addPlayer(playerObj){
+    let player = new Player(this.engine, playerObj.x, playerObj.y, 0, playerObj.socketId, playerObj.settings, playerObj.bullets);
+    this.players.push(player);
   }
 
-  removePlayer(spot){
-    for(let i in this.players){
-      let player = this.players[i];
-      if(player.spot === spot){
-        Matter.World.remove(this.engine.world, player.body);
-        this.players.splice(i, 1);
+  removePlayers(){
+    for(let player of this.players){
+      for(let bullet of player.bullets){
+        Matter.World.remove(this.engine.world, bullet);
       }
+      player.bullets.length = 0;
+      Matter.World.remove(this.engine.world, player.body);
     }
+    this.players.length = 0;
+  }
+
+  setState(stateObj){
+    this.removePlayers();
+    for(let playerObj of stateObj.players){
+      this.addPlayer(playerObj);
+    }
+    console.log(Matter.Composite.allBodies(this.engine.world).length);
   }
 
 }

@@ -1,19 +1,20 @@
 import Game from "../shared/Game";
 import Player from "../shared/Player";
-import Helper from "../shared/Helper";
 import Matter from "matter-js";
 
 export default class ServerGame extends Game {
 
-  constructor(){
+  constructor(io){
     super();
+    this.io = io;
     this.nextSpot = 0;
     this.spot = 0;
   }
 
   addPlayer(socketId){
     let spot = this.spots[this.nextSpot];
-    this.players.push(new Player(this.engine, spot.x, spot.y, this.nextSpot, socketId));
+    let player = new Player(this.engine, spot.x, spot.y, this.nextSpot, socketId);
+    this.players.push(player);
     return this.nextSpot++;
   }
 
@@ -21,32 +22,48 @@ export default class ServerGame extends Game {
     for(let i in this.players){
       let player = this.players[i];
       if(player.socketId === socketId){
+        for(let bullet of player.bullets){
+          Matter.World.remove(this.engine.world, bullet);
+        }
         Matter.World.remove(this.engine.world, player.body);
         this.nextSpot = player.spot;
         this.players.splice(i, 1);
-        return player.spot;
       }
     }
   }
 
-  get state(){
+  getState(){
     let stateObj = {};
 
     // Get state of players
     stateObj.players = [];
     for(let player of this.players){
-      let playerObj = Helper.bodyState(player.body);
-      playerObj.socketId = player.socketId;
+      let playerObj = {
+        socketId: player.socketId,
+        x: player.body.position.x,
+        y: player.body.position.y,
+        spot: player.spot,
+        settings: {
+          positionImpulse: player.body.positionImpulse,
+          velocity: player.body.velocity,
+          angle: player.body.angle
+        }
+      }
+      // Get state of player bullets
       playerObj.bullets = [];
-
       for(let bullet of player.bullets){
-        let bulletObj = Helper.bodyState(bullet);
+        let bulletObj = {
+          x: bullet.position.x,
+          y: bullet.position.y,
+          velocity: bullet.velocity
+        }
         playerObj.bullets.push(bulletObj);
       }
+
       stateObj.players.push(playerObj);
     }
 
-    console.log(stateObj);
+    return stateObj;
   }
 
 }

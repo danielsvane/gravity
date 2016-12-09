@@ -7,6 +7,8 @@ export default class Game {
     this.engine = Matter.Engine.create();
     this.engine.world.gravity.y = 0;
     this.stepInterval = undefined;
+    this.interval = 40;
+    this.expected = Date.now()+this.interval;
     this.players = [];
     this.planets = [];
     this.spots = [{
@@ -20,6 +22,8 @@ export default class Game {
     let planet = Matter.Bodies.circle(400, 300, 150, {isStatic: true});
     Matter.World.add(this.engine.world, planet);
     this.planets.push(planet);
+
+    this.setupCollisionEvents();
   }
 
   player(socketId){
@@ -30,11 +34,24 @@ export default class Game {
     }
   }
 
+  removeBullet(bullet){
+    for(let player of this.players){
+      for(let i in player.bullets){
+        let _bullet = player.bullets[i];
+        if(_bullet === bullet){
+          player.removeBullet(i);
+        }
+      }
+    }
+  }
+
   start(){
-    this.stepInterval = setInterval(this.step.bind(this), 1000/30);
+    setTimeout(this.step.bind(this), this.interval);
   }
 
   step(){
+    let dt = Date.now()-this.expected;
+
     for(let planet of this.planets){
       for(let player of this.players){
         for(let bullet of player.bullets){
@@ -47,6 +64,35 @@ export default class Game {
       }
     }
     Matter.Engine.update(this.engine);
+
+    this.expected += this.interval;
+    setTimeout(this.step.bind(this), this.interval-dt);
+  }
+
+  setupCollisionEvents(){
+    Matter.Events.on(this.engine, "collisionEnd", (e) => {
+      let pair = e.pairs[0];
+      let body;
+      let bullet;
+      if(pair.bodyA.label == "player" && pair.bodyB.label == "bullet"){
+        body = pair.bodyA;
+        bullet = pair.bodyB;
+      }
+      else if(pair.bodyB.label == "player" && pair.bodyA.label == "bullet"){
+        body = pair.bodyB;
+        bullet = pair.bodyA;
+      }
+      else return;
+
+      // Find the player hit, and decrease lives
+      for(let player of this.players){
+        if(player.body.id == body.id){
+          this.removeBullet(bullet);
+          if(this.io) this.io.sockets.emit("game state", this.getState());
+          break;
+        }
+      }
+    });
   }
 
 }
