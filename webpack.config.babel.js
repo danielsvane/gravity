@@ -5,7 +5,7 @@ console.log(path.join(__dirname, "src"));
 
 export default [
   {
-    entry: "./src/client/client.js",
+    entry: ["./src/client/client.js", "./src/shared/Game.js"],
     output: {
       filename: "./dist/client.min.js"
     },
@@ -14,8 +14,7 @@ export default [
         {
           test: /\.js$/,
           exclude: /node_modules/,
-          loader: "babel-loader",
-          include: path.join(__dirname, "src")
+          loader: "babel-loader"
         }
       ]
     }
