@@ -4,6 +4,7 @@ import Player from "../shared/Player";
 export default class Game {
 
   constructor(){
+    console.log("omgplz");
     this.engine = Matter.Engine.create();
     this.engine.world.gravity.y = 0;
     this.stepInterval = undefined;
