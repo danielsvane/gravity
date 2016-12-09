@@ -1,10 +1,10 @@
 import ClientGame from "../client/ClientGame";
-import io from "socket.io-client";
+//import io from "socket.io-client";
 
 let game = new ClientGame();
 game.start();
 
-let socket = io("http://localhost:80");
+let socket = io();
 
 socket.on("game state", function(state){
   game.setState(state);
