@@ -1,7 +1,13 @@
 import webpack from "webpack";
+import path from "path";
 
 export default [
   {
+    resolve: {
+      root: [
+        path.resolve('./src')
+      ]
+    },
     entry: "./src/client/client.js",
     output: {
       filename: "./dist/client.min.js"

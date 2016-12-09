@@ -1,4 +1,4 @@
-import ClientGame from "./ClientGame";
+import ClientGame from "client/ClientGame";
 import io from "socket.io-client";
 
 let game = new ClientGame();
