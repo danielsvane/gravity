@@ -1,4 +1,4 @@
-import Game from "./shared/Game";
+import Game from "src/shared/Game";
 import Player from "./../shared/Player";
 import Matter from "matter-js";
 export default class ClientGame extends Game {
