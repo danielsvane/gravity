@@ -31,6 +31,12 @@ export default class Game {
     this.setupCollisionEvents();
   }
 
+  sendState(){
+    setTimeout(() => {
+      this.io.sockets.emit("game state", this.getState());
+    }, 200);
+  }
+
   addPlanet(x, y, radius){
     var planet = Matter.Bodies.circle(x, y, radius, {
       collisionFilter: {
@@ -143,9 +149,8 @@ export default class Game {
     for(let player of this.players){
       if(player.body.id == body.id){
         this.removeBullet(bullet);
-        if(this.io){
-          this.io.sockets.emit("game state", this.getState());
-        }
+        player.hit();
+        if(this.io) this.sendState();
         break;
       }
     }

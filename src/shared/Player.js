@@ -34,6 +34,11 @@ export default class Player {
     }
   }
 
+  hit(){
+    this.health -= 1;
+    if(this.health < 0) this.health = 0;
+  }
+
   increasePower(){
     this.power += 0.05;
     if(this.power > 1) this.power = 1;

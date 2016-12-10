@@ -5,8 +5,11 @@ game.start();
 
 let socket = io();
 
+socket.on("bar", function(clientTime, serverTime){
+  console.log("round time", Date.now()-clientTime);
+})
+
 socket.on("game state", function(state){
-  console.log(state);
   game.setState(state);
 });
 
@@ -38,6 +41,9 @@ document.addEventListener("keydown", function(e){
   if(e.key === " "){
     //game.player(socket.id).shoot();
     socket.emit("player shoot");
+  }
+  if(e.key === "p"){
+    socket.emit("foo", Date.now());
   }
 });
 

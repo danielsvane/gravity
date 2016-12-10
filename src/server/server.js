@@ -18,6 +18,11 @@ io.on('connection', function (socket) {
   game.addPlayer(socket.id);
   io.sockets.emit("game state", game.getState());
 
+  socket.on("foo", function(clientTime){
+    console.log(clientTime);
+    socket.emit("bar", clientTime, Date.now());
+  });
+
   socket.on("player rotate", function(angle){
     let player = game.player(socket.id);
     player.rotate(angle);
