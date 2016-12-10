@@ -37,6 +37,8 @@ export default class ServerGame extends Game {
   getState(){
     let stateObj = {};
 
+    stateObj.time = Date.now();
+
     // Get state of players
     stateObj.players = [];
     for(let player of this.players){

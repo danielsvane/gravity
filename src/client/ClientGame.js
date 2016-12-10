@@ -39,6 +39,8 @@ export default class ClientGame extends Game {
   }
 
   setState(stateObj){
+    console.log("time difference", stateObj.time-Date.now());
+
     this.removePlayers();
     for(let playerObj of stateObj.players){
       this.addPlayer(playerObj);
