@@ -9,11 +9,18 @@ export default class ServerGame extends Game {
     this.io = io;
     this.nextSpot = 0;
     this.spot = 0;
+    this.steps = 0;
   }
 
   step(){
+    // Send state every second
     super.step();
-    this.io.sockets.emit("game state", this.getState());
+    this.steps++;
+    if(!(this.steps%30)){
+      this.io.sockets.emit("game state", this.getState());
+      this.steps = 0;
+      //console.log("weee");
+    }
   }
 
   addPlayer(socketId){
