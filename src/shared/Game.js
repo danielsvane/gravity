@@ -88,7 +88,7 @@ export default class Game {
     setTimeout(this.step.bind(this), this.interval);
   }
 
-  step(){
+  step(time = this.interval){
     let dt = Date.now()-this.expected;
 
     for(let planet of this.planets){
@@ -103,7 +103,7 @@ export default class Game {
       }
     }
     this.checkBulletTime();
-    Matter.Engine.update(this.engine, this.interval);
+    Matter.Engine.update(this.engine, time);
 
     this.expected += this.interval;
     setTimeout(this.step.bind(this), this.interval-dt);
@@ -144,6 +144,10 @@ export default class Game {
       if(player.body.id == body.id){
         this.removeBullet(bullet);
         if(this.io) this.io.sockets.emit("game state", this.getState());
+        else {
+          player.body.positionImpulse = {x: 0, y: 0};
+          Matter.Body.setVelocity(player.body, {x: 0, y: 0});
+        }
         break;
       }
     }
