@@ -144,7 +144,10 @@ export default class Game {
       if(player.body.id == body.id){
         this.removeBullet(bullet);
         if(this.io) this.io.sockets.emit("game state", this.getState());
-        else Matter.Body.setVelocity(player.body, {x: 0, y: 0});
+        else {
+          player.body.positionImpulse = {x: 0, y: 0};
+          Matter.Body.setVelocity(player.body, {x: 0, y: 0});
+        }
         break;
       }
     }
