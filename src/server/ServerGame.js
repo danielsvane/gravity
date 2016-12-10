@@ -11,6 +11,11 @@ export default class ServerGame extends Game {
     this.spot = 0;
   }
 
+  step(){
+    super.step();
+    this.io.sockets.emit("game state", this.getState());
+  }
+
   addPlayer(socketId){
     let spot = this.spots[this.nextSpot];
     let player = new Player(this.engine, spot.x, spot.y, this.nextSpot, socketId);

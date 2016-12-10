@@ -16,7 +16,7 @@ game.start();
 
 io.on('connection', function (socket) {
   game.addPlayer(socket.id);
-  io.sockets.emit("game state", game.getState());
+  //io.sockets.emit("game state", game.getState());
 
   socket.on("player rotate", function(angle){
     let player = game.player(socket.id);
@@ -26,7 +26,7 @@ io.on('connection', function (socket) {
 
   socket.on("player shoot", function(){
     game.player(socket.id).shoot();
-    io.sockets.emit("game state", game.getState());
+    //io.sockets.emit("game state", game.getState());
   });
 
   socket.on("player increase power", function(){
@@ -43,7 +43,7 @@ io.on('connection', function (socket) {
 
   socket.on("disconnect", function(){
     game.removePlayer(socket.id);
-    io.sockets.emit("game state", game.getState());
+    //io.sockets.emit("game state", game.getState());
   });
 });
 

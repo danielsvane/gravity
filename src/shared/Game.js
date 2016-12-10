@@ -143,7 +143,7 @@ export default class Game {
     for(let player of this.players){
       if(player.body.id == body.id){
         this.removeBullet(bullet);
-        if(this.io) this.io.sockets.emit("game state", this.getState());
+        //if(this.io) this.io.sockets.emit("game state", this.getState());
         break;
       }
     }
