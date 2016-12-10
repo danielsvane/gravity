@@ -39,11 +39,19 @@ export default class ClientGame extends Game {
   }
 
   setState(stateObj){
-    console.log("time difference", stateObj.time-Date.now());
 
     this.removePlayers();
     for(let playerObj of stateObj.players){
       this.addPlayer(playerObj);
+    }
+
+    // Step game forward so it matches with server
+    let difference = Date.now()-stateObj.time;
+    console.log("time difference", difference);
+    let steps = Math.floor(difference/this.interval);
+    console.log("stepping ahead", steps, "times");
+    for(let i=0; i<steps; i++){
+      this.step();
     }
   }
 

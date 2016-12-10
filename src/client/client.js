@@ -36,7 +36,7 @@ document.addEventListener("keydown", function(e){
     socket.emit("player decrease power");
   }
   if(e.key === " "){
-    //game.player(socket.id).shoot();
+    game.player(socket.id).shoot();
     socket.emit("player shoot");
   }
 });
