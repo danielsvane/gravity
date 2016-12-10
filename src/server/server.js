@@ -1,7 +1,6 @@
 import http from "http";
 import express from "express";
 import path from "path";
-import Matter from "matter-js";
 import Game from "../server/ServerGame";
 import ioFactory from "socket.io";
 

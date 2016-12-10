@@ -15,7 +15,8 @@ export default class ServerGame extends Game {
     let spot = this.spots[this.nextSpot];
     let player = new Player(this.engine, spot.x, spot.y, this.nextSpot, socketId);
     this.players.push(player);
-    return this.nextSpot++;
+    this.nextSpot++;
+    if(this.nextSpot > this.spots.length-1) this.nextSpot = 0;
   }
 
   removePlayer(socketId){

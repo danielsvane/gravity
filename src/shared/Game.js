@@ -94,10 +94,10 @@ export default class Game {
     for(let planet of this.planets){
       for(let player of this.players){
         for(let bullet of player.bullets){
-          var r = Matter.Vector.sub(planet.position, bullet.position);
-          var mag = Matter.Vector.magnitude(r);
-          var norm = Matter.Vector.normalise(r);
-          var force = Matter.Vector.mult(norm, planet.circleRadius*bullet.mass*0.001/mag);
+          let r = Matter.Vector.sub(planet.position, bullet.position);
+          let mag = Matter.Vector.magnitude(r);
+          let norm = Matter.Vector.normalise(r);
+          let force = Matter.Vector.mult(norm, planet.circleRadius*bullet.mass*0.001/mag);
           Matter.Body.applyForce(bullet, bullet.position, force);
         }
       }
@@ -122,29 +122,31 @@ export default class Game {
   }
 
   setupCollisionEvents(){
-    Matter.Events.on(this.engine, "collisionEnd", (e) => {
-      let pair = e.pairs[0];
-      let body;
-      let bullet;
-      if(pair.bodyA.label == "player" && pair.bodyB.label == "bullet"){
-        body = pair.bodyA;
-        bullet = pair.bodyB;
-      }
-      else if(pair.bodyB.label == "player" && pair.bodyA.label == "bullet"){
-        body = pair.bodyB;
-        bullet = pair.bodyA;
-      }
-      else return;
+    Matter.Events.on(this.engine, "collisionEnd", this.handleCollision.bind(this));
+  }
 
-      // Find the player hit, and decrease lives
-      for(let player of this.players){
-        if(player.body.id == body.id){
-          this.removeBullet(bullet);
-          if(this.io) this.io.sockets.emit("game state", this.getState());
-          break;
-        }
+  handleCollision(e){
+    let pair = e.pairs[0];
+    let body;
+    let bullet;
+    if(pair.bodyA.label == "player" && pair.bodyB.label == "bullet"){
+      body = pair.bodyA;
+      bullet = pair.bodyB;
+    }
+    else if(pair.bodyB.label == "player" && pair.bodyA.label == "bullet"){
+      body = pair.bodyB;
+      bullet = pair.bodyA;
+    }
+    else return;
+
+    // Find the player hit, and decrease lives
+    for(let player of this.players){
+      if(player.body.id == body.id){
+        this.removeBullet(bullet);
+        if(this.io) this.io.sockets.emit("game state", this.getState());
+        break;
       }
-    });
+    }
   }
 
 }
