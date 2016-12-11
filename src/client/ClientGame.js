@@ -72,9 +72,9 @@ export default class ClientGame extends Game {
     // console.log("time difference", difference);
     // let steps = Math.round(difference/this.interval);
     // console.log("stepping ahead", steps, "times");
-    // for(let i=0; i<steps; i++){
-    //   this.step();
-    // }
+    for(let i=0; i<2; i++){
+        this.step();
+    }
   }
 
 }
