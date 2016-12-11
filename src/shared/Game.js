@@ -132,28 +132,34 @@ export default class Game {
   }
 
   handleCollision(e){
-    let pair = e.pairs[0];
-    let body;
-    let bullet;
-    if(pair.bodyA.label == "player" && pair.bodyB.label == "bullet"){
-      body = pair.bodyA;
-      bullet = pair.bodyB;
-    }
-    else if(pair.bodyB.label == "player" && pair.bodyA.label == "bullet"){
-      body = pair.bodyB;
-      bullet = pair.bodyA;
-    }
-    else return;
+    let wasPlayerHit = false;
 
-    // Find the player hit, and decrease lives
-    for(let player of this.players){
-      if(player.body.id == body.id){
-        this.removeBullet(bullet);
-        player.hit();
-        if(this.io) this.sendState();
-        break;
+    for(let pair of e.pairs){
+      let body;
+      let bullet;
+      if(pair.bodyA.label == "player" && pair.bodyB.label == "bullet"){
+        body = pair.bodyA;
+        bullet = pair.bodyB;
+      }
+      else if(pair.bodyB.label == "player" && pair.bodyA.label == "bullet"){
+        body = pair.bodyB;
+        bullet = pair.bodyA;
+      }
+      else break;
+
+      // Find the player hit, and decrease lives
+      for(let player of this.players){
+        if(player.body.id == body.id){
+          this.removeBullet(bullet);
+          player.hit();
+          wasPlayerHit = true;
+          break;
+        }
       }
     }
+
+    if(wasPlayerHit && this.io) this.sendState();
+
   }
 
 }

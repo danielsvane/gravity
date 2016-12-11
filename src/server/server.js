@@ -18,8 +18,8 @@ io.on('connection', function (socket) {
   game.addPlayer(socket.id);
   io.sockets.emit("game state", game.getState());
 
+  // For syncing unix time with client since they dont perfectly match (50ms off)
   socket.on("foo", function(clientTime){
-    console.log(clientTime);
     socket.emit("bar", clientTime, Date.now());
   });
 
