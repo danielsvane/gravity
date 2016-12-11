@@ -16,25 +16,25 @@ export default class ClientGame extends Game {
     // });
   }
 
-  setupCollisionEvents(){
-    super.setupCollisionEvents();
-    Matter.Events.on(this.engine, "collisionStart", (e) => {
-      let pair = e.pairs[0];
-      let body;
-      let bullet;
-      if(pair.bodyA.label == "player" && pair.bodyB.label == "bullet"){
-        body = pair.bodyA;
-        bullet = pair.bodyB;
-      }
-      else if(pair.bodyB.label == "player" && pair.bodyA.label == "bullet"){
-        body = pair.bodyB;
-        bullet = pair.bodyA;
-      }
-      else return;
-
-      Matter.Body.setStatic(body, true);
-    });
-  }
+  // setupCollisionEvents(){
+  //   super.setupCollisionEvents();
+  //   Matter.Events.on(this.engine, "collisionStart", (e) => {
+  //     let pair = e.pairs[0];
+  //     let body;
+  //     let bullet;
+  //     if(pair.bodyA.label == "player" && pair.bodyB.label == "bullet"){
+  //       body = pair.bodyA;
+  //       bullet = pair.bodyB;
+  //     }
+  //     else if(pair.bodyB.label == "player" && pair.bodyA.label == "bullet"){
+  //       body = pair.bodyB;
+  //       bullet = pair.bodyA;
+  //     }
+  //     else return;
+  //
+  //     Matter.Body.setStatic(body, true);
+  //   });
+  // }
 
   step(){
     super.step();
@@ -65,14 +65,14 @@ export default class ClientGame extends Game {
       this.addPlayer(playerObj);
     }
 
-    // Step game forward so it matches with server
-    // let difference = Date.now()-stateObj.time;
-    // console.log("time difference", difference);
-    // let steps = Math.floor(difference/this.interval);
-    // console.log("stepping ahead", steps, "times");
-    // for(let i=0; i<steps; i++){
-    //   this.step();
-    // }
+    Step game forward so it matches with server
+    let difference = Date.now()-stateObj.time+60;
+    console.log("time difference", difference);
+    let steps = Math.floor(difference/this.interval);
+    console.log("stepping ahead", steps, "times");
+    for(let i=0; i<steps; i++){
+      this.step();
+    }
   }
 
 }
