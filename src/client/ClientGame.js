@@ -69,7 +69,7 @@ export default class ClientGame extends Game {
     // Step game forward so it matches with server
     let difference = Date.now()-stateObj.time+this.serverClientTimeDiff;
     console.log("time difference", difference);
-    let steps = Math.floor(difference/this.interval);
+    let steps = Math.round(difference/this.interval);
     console.log("stepping ahead", steps, "times");
     for(let i=0; i<steps; i++){
       this.step();
