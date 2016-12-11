@@ -17,6 +17,7 @@ let pingChecks = 0;
 let adjustedTimeSum = 0;
 socket.on("bar", function(clientTime, serverTime){
   let roundTime = Date.now()-clientTime;
+  console.log("round time");
   let adjustedDifference = Date.now()-serverTime+roundTime/2;
   adjustedTimeSum += adjustedDifference;
   pingChecks++;
