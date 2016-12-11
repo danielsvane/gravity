@@ -40,12 +40,12 @@ export default class Player {
   }
 
   increasePower(){
-    this.power += 0.05;
+    this.power += 0.01;
     if(this.power > 1) this.power = 1;
   }
 
   decreasePower(){
-    this.power -= 0.05;
+    this.power -= 0.01;
     if(this.power < 0) this.power = 0;
   }
 

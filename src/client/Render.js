@@ -32,10 +32,6 @@ export default class Renderer {
     this.zoom(-0.2);
   }
 
-  // start(){
-  //   this.render();
-  // }
-
   zoomIn(){
     this.zoom(this.scaleFactor);
   }
@@ -60,6 +56,13 @@ export default class Renderer {
     this.offsetY += y;
   }
 
+  normalizeAngle(angle){
+    angle = Math.round(180/Math.PI*angle);
+    angle = -angle%360;
+    if(angle < 0) angle += 360;
+    return angle;
+  }
+
   render(){
 
     let context = this.context;
@@ -70,6 +73,17 @@ export default class Renderer {
     context.beginPath();
     context.fillRect(0, 0, canvas.width, canvas.height);
 
+    // Draw angle and power info
+    if(game.currentPlayer){
+      context.fillStyle = "#222";
+      context.font = "20px arial";
+      context.beginPath();
+      context.fillText("Angle: " + this.normalizeAngle(game.currentPlayer.body.angle) + "°", 10, 30);
+      context.fill();
+      context.beginPath();
+      context.fillText("Power: " + Math.round(game.currentPlayer.power*100) + "%", 10, 60);
+      context.fill();
+    }
 
     // // Draw the abilities
     // if(game.currentPlayer){

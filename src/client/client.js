@@ -6,29 +6,12 @@ game.start();
 let socket = io();
 
 socket.on("connect", function(){
-  for(let i=1; i<11; i++){
-    setTimeout(() => {
-      socket.emit("foo", Date.now());
-    }, 200*i);
-  }
-});
-
-let pingChecks = 0;
-let adjustedTimeSum = 0;
-socket.on("bar", function(clientTime, serverTime){
-  let roundTime = Date.now()-clientTime;
-  console.log("round time");
-  let adjustedDifference = Date.now()-serverTime-roundTime/2;
-  adjustedTimeSum += adjustedDifference;
-  pingChecks++;
-  if(pingChecks >= 10){
-    game.serverClientTimeDiff = adjustedTimeSum/10;
-    console.log("average difference in client and server time", adjustedTimeSum/10);
-  }
+  checkTimeDiff();
 });
 
 socket.on("game state", function(state){
   game.setState(state);
+  game.currentPlayer = game.player(socket.id);
 });
 
 socket.on("player rotate", function(socketId, angle){
@@ -41,12 +24,12 @@ socket.on("player set power", function(socketId, power){
 
 document.addEventListener("keydown", function(e){
   if(e.key === "ArrowLeft"){
-    game.player(socket.id).rotate(-Math.PI/30);
-    socket.emit("player rotate", -Math.PI/30);
+    game.player(socket.id).rotate(-Math.PI/60);
+    socket.emit("player rotate", -Math.PI/60);
   }
   if(e.key === "ArrowRight"){
-    game.player(socket.id).rotate(Math.PI/30);
-    socket.emit("player rotate", Math.PI/30);
+    game.player(socket.id).rotate(Math.PI/60);
+    socket.emit("player rotate", Math.PI/60);
   }
   if(e.key === "ArrowUp"){
     game.player(socket.id).increasePower();
@@ -92,4 +75,27 @@ window.addEventListener("resize", function(){
 
 document.addEventListener("mouseup", function(){
   document.removeEventListener("mousemove", drag);
+});
+
+// Super hack to calculate the UNIX timestamp difference between server and client
+let checkTimeDiff = function(){
+  for(let i=1; i<11; i++){
+    setTimeout(() => {
+      socket.emit("foo", Date.now());
+    }, 200*i);
+  }
+}
+
+let pingChecks = 0;
+let adjustedTimeSum = 0;
+socket.on("bar", function(clientTime, serverTime){
+  let roundTime = Date.now()-clientTime;
+  console.log("round time");
+  let adjustedDifference = Date.now()-serverTime-roundTime/2;
+  adjustedTimeSum += adjustedDifference;
+  pingChecks++;
+  if(pingChecks >= 10){
+    game.serverClientTimeDiff = adjustedTimeSum/10;
+    console.log("average difference in client and server time", game.serverClientTimeDiff);
+  }
 });
