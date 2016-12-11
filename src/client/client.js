@@ -17,15 +17,12 @@ let pingChecks = 0;
 let adjustedTimeSum = 0;
 socket.on("bar", function(clientTime, serverTime){
   let roundTime = Date.now()-clientTime;
-  console.log("round time", roundTime);
-  console.log("difference server client time", Date.now()-serverTime);
-  let adjustedDifference = Date.now()-serverTime-roundTime/2;
-  console.log("adjusted difference", adjustedDifference);
+  let adjustedDifference = Date.now()-serverTime+roundTime/2;
   adjustedTimeSum += adjustedDifference;
   pingChecks++;
-  console.log(pingChecks);
   if(pingChecks >= 10){
-    console.log("average difference", adjustedTimeSum/10);
+    game.serverClientTimeDiff = adjustedTimeSum/10;
+    console.log("average difference in client and server time", adjustedTimeSum/10);
   }
 });
 

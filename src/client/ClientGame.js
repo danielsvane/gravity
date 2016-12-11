@@ -6,6 +6,7 @@ export default class ClientGame extends Game {
 
   constructor(){
     super();
+    this.serverClientTimeDiff = 0;
     this.render = new Render(this);
     // this.render = Matter.Render.create({
     //   element: document.body,
@@ -65,8 +66,8 @@ export default class ClientGame extends Game {
       this.addPlayer(playerObj);
     }
 
-    //Step game forward so it matches with server
-    let difference = Date.now()-stateObj.time+60;
+    // Step game forward so it matches with server
+    let difference = Date.now()-stateObj.time+this.serverClientTimeDiff;
     console.log("time difference", difference);
     let steps = Math.floor(difference/this.interval);
     console.log("stepping ahead", steps, "times");
