@@ -5,9 +5,29 @@ game.start();
 
 let socket = io();
 
+socket.on("connect", function(){
+  for(let i=1; i<11; i++){
+    setTimeout(() => {
+      socket.emit("foo", Date.now());
+    }, 200*i);
+  }
+});
+
+let pingChecks = 0;
+let adjustedTimeSum = 0;
 socket.on("bar", function(clientTime, serverTime){
-  console.log("round time", Date.now()-clientTime);
-})
+  let roundTime = Date.now()-clientTime;
+  console.log("round time", roundTime);
+  console.log("difference server client time", Date.now()-serverTime);
+  let adjustedDifference = Date.now()-serverTime-roundTime/2;
+  console.log("adjusted difference", adjustedDifference);
+  adjustedTimeSum += adjustedDifference;
+  pingChecks++;
+  console.log(pingChecks);
+  if(pingChecks >= 10){
+    console.log("average difference", adjustedTimeSum/10);
+  }
+});
 
 socket.on("game state", function(state){
   game.setState(state);
