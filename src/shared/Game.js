@@ -9,23 +9,28 @@ export default class Game {
     this.stepInterval = undefined;
     this.interval = interval;
     this.expected = Date.now()+this.interval;
-    this.width = 1000;
-    this.height = 1000;
+    this.width = 2000;
+    this.height = 2000;
     this.players = [];
     this.planets = [];
     this.bounds = [];
     this.spots = [{
-      x: 150,
-      y: 150,
+      x: 250,
+      y: 250,
       color: "#2467cc"
     },{
-      x: 850,
-      y: 850,
+      x: 1750,
+      y: 1750,
       color: "#d32626"
     }];
 
-    this.addPlanet(550, 450, 170);
+    this.addPlanet(1050, 950, 170);
     this.addPlanet(250, 700, 120);
+
+    this.addPlanet(1700, 500, 250);
+
+    // this.addPlanet(550, 450, 170);
+    // this.addPlanet(250, 700, 120);
 
     this.createBounds();
     this.setupCollisionEvents();
@@ -101,9 +106,9 @@ export default class Game {
       for(let player of this.players){
         for(let bullet of player.bullets){
           let r = Matter.Vector.sub(planet.position, bullet.position);
-          let mag = Matter.Vector.magnitude(r);
+          let mag = Matter.Vector.magnitudeSquared(r);
           let norm = Matter.Vector.normalise(r);
-          let force = Matter.Vector.mult(norm, planet.circleRadius*bullet.mass*0.001/mag);
+          let force = Matter.Vector.mult(norm, Math.pow(planet.circleRadius, 3)*bullet.mass*0.000008/mag); // 0.001
           Matter.Body.applyForce(bullet, bullet.position, force);
         }
       }

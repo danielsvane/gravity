@@ -28,6 +28,8 @@ export default class Renderer {
 
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
+
+    this.zoom(-0.2);
   }
 
   // start(){
