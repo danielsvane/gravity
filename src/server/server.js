@@ -29,11 +29,6 @@ io.on('connection', function (socket) {
     socket.broadcast.emit("player rotate", player.socketId, player.body.angle);
   });
 
-  socket.on("player shoot", function(){
-    game.player(socket.id).shoot();
-    io.sockets.emit("game state", game.getState());
-  });
-
   socket.on("player increase power", function(){
     let player = game.player(socket.id);
     player.increasePower();
@@ -44,6 +39,16 @@ io.on('connection', function (socket) {
     let player = game.player(socket.id);
     player.decreasePower();
     socket.broadcast.emit("player set power", player.socketId, player.power);
+  });
+
+  socket.on("use ability", function(index){
+    let ability = game.player(socket.id).abilities[index];
+    console.log(ability.cooldownRemain);
+    if(!ability.isOnCooldown()){
+      ability.use();
+      console.log("using ability", index);
+      io.sockets.emit("game state", game.getState());
+    }
   });
 
   socket.on("disconnect", function(){

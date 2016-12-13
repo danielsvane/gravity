@@ -65,6 +65,15 @@ export default class ServerGame extends Game {
         playerObj.bullets.push(bulletObj);
       }
 
+      // Get state of player abilities
+      playerObj.abilities = [];
+      for(let ability of player.abilities){
+        let abilityObj = {
+          cooldownRemain: ability.cooldownRemain
+        }
+        playerObj.abilities.push(abilityObj);
+      }
+
       stateObj.players.push(playerObj);
     }
 

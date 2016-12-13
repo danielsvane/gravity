@@ -16,7 +16,17 @@ export default class ClientGame extends Game {
   }
 
   addPlayer(playerObj){
-    let player = new Player(this.engine, playerObj.x, playerObj.y, playerObj.spot, playerObj.socketId, playerObj.settings, playerObj.bullets);
+    console.log(playerObj.abilities)
+    let player = new Player(
+      this.engine,
+      playerObj.x,
+      playerObj.y,
+      playerObj.spot,
+      playerObj.socketId,
+      playerObj.settings,
+      playerObj.bullets,
+      playerObj.abilities
+    );
     this.players.push(player);
   }
 
@@ -38,7 +48,7 @@ export default class ClientGame extends Game {
       this.addPlayer(playerObj);
     }
 
-    this.step();
+    //this.step();
     // Step game forward so it matches with server
     let difference = Date.now()-stateObj.time-this.serverClientTimeDiff;
     console.log("time difference", difference);

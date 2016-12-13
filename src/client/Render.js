@@ -85,6 +85,14 @@ export default class Renderer {
       context.fill();
     }
 
+    if(game.currentPlayer){
+      for(let ability of game.currentPlayer.abilities){
+        context.beginPath();
+        context.fillText("Q: " + ability.cooldownRemain, 10, 90);
+        context.fill();
+      }
+    }
+
     // // Draw the abilities
     // if(game.currentPlayer){
     //   for(let [i, ability] of game.currentPlayer.abilities.entries()){

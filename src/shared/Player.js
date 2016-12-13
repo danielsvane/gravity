@@ -1,13 +1,15 @@
 import Matter from "matter-js";
+import Ability from "../shared/Ability";
 
 export default class Player {
-  constructor(engine, x, y, spot, socketId, settings = undefined, bullets = undefined){
+  constructor(engine, x, y, spot, socketId, settings = undefined, bullets = undefined, abilities = undefined){
     this.engine = engine;
     this.socketId = socketId;
     this.spot = spot;
     this.health = 3;
     this.power = 0.5;
     this.bullets = [];
+    this.abilities = [];
 
     let body = Matter.Bodies.circle(x, y, 30);
     body.label = "player";
@@ -15,8 +17,11 @@ export default class Player {
     body.friction = 0;
     body.frictionAir = 0.05;
     body.frictionStatic = 0;
-
+    this.body = body;
     Matter.Body.setInertia(body, Infinity);
+    Matter.World.add(engine.world, this.body);
+
+    this.abilities.push(new Ability(this));
 
     if(settings){
       this.health = settings.health;
@@ -26,11 +31,14 @@ export default class Player {
       Matter.Body.setAngle(body, settings.angle);
     }
 
-    this.body = body;
-    Matter.World.add(engine.world, this.body);
-
     if(bullets){
       this.addBullets(bullets);
+    }
+
+    if(abilities){
+      for(let i in abilities){
+        this.abilities[i].cooldownRemain = abilities[i].cooldownRemain;
+      }
     }
   }
 
@@ -86,18 +94,5 @@ export default class Player {
     Matter.Body.setVelocity(bullet, velocity);
     Matter.World.add(this.engine.world, bullet);
     this.bullets.push(bullet);
-  }
-
-  shoot(){
-    let bulletRadius = 10;
-    let body = this.body;
-    let x = body.position.x+(body.circleRadius+bulletRadius)*Math.cos(body.angle);
-    let y = body.position.y+(body.circleRadius+bulletRadius)*Math.sin(body.angle);
-    let velocity = {
-      x: this.power*20*Math.cos(body.angle),
-      y: this.power*20*Math.sin(body.angle)
-    }
-
-    this.addBullet(x, y, velocity);
   }
 }

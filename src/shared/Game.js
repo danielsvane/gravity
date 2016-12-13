@@ -113,11 +113,21 @@ export default class Game {
         }
       }
     }
+
     this.checkBulletTime();
+    this.decreaseCooldowns();
     Matter.Engine.update(this.engine, time);
 
     this.expected += this.interval;
     setTimeout(this.step.bind(this), this.interval-dt);
+  }
+
+  decreaseCooldowns(){
+    for(let player of this.players){
+      for(let ability of player.abilities){
+        ability.decreaseCooldown();
+      }
+    }
   }
 
   checkBulletTime(){
