@@ -105,16 +105,18 @@ export default class Game {
     for(let planet of this.planets){
       for(let player of this.players){
         for(let ability of player.currentAbilities){
-          let r = Matter.Vector.sub(planet.position, ability.position);
-          let mag = Matter.Vector.magnitudeSquared(r);
-          let norm = Matter.Vector.normalise(r);
-          let force = Matter.Vector.mult(norm, Math.pow(planet.circleRadius, 3)*ability.mass*0.000008/mag); // 0.001
-          Matter.Body.applyForce(ability, {x: 0, y: 0}, force);
+          if(ability.abilityId === 0){
+            let r = Matter.Vector.sub(planet.position, ability.position);
+            let mag = Matter.Vector.magnitudeSquared(r);
+            let norm = Matter.Vector.normalise(r);
+            let force = Matter.Vector.mult(norm, Math.pow(planet.circleRadius, 3)*ability.mass*0.000008/mag); // 0.001
+            Matter.Body.applyForce(ability, {x: 0, y: 0}, force);
+          }
         }
       }
     }
 
-    this.checkBulletTime();
+    this.checkAbilityTime();
     this.decreaseCooldowns();
     Matter.Engine.update(this.engine, time);
 
@@ -130,7 +132,7 @@ export default class Game {
     }
   }
 
-  checkBulletTime(){
+  checkAbilityTime(){
     for(let player of this.players){
       for(let i in player.currentAbilities){
         let ability = player.currentAbilities[i];

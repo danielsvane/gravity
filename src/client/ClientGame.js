@@ -16,7 +16,6 @@ export default class ClientGame extends Game {
   }
 
   addPlayer(playerObj){
-    console.log(playerObj.abilities)
     let player = new Player(
       this.engine,
       playerObj.x,
@@ -42,16 +41,11 @@ export default class ClientGame extends Game {
   }
 
   setState(stateObj){
-
-    console.log(JSON.stringify(stateObj));
-
     this.removePlayers();
     for(let playerObj of stateObj.players){
       this.addPlayer(playerObj);
     }
-    console.log(this.players[0].currentAbilities);
-
-    //this.step();
+    
     // Step game forward so it matches with server
     let difference = Date.now()-stateObj.time-this.serverClientTimeDiff;
     //console.log("time difference", difference);

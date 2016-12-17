@@ -43,10 +43,8 @@ io.on('connection', function (socket) {
 
   socket.on("use ability", function(index){
     let ability = game.player(socket.id).abilities[index];
-    console.log(ability.cooldownRemain);
     if(!ability.isOnCooldown()){
       ability.use();
-      console.log("using ability", index);
       io.sockets.emit("game state", game.getState());
     }
   });

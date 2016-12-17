@@ -1,8 +1,6 @@
 import webpack from "webpack";
 import path from "path";
 
-console.log(path.join(__dirname, "src"));
-
 export default [
   {
     entry: "./src/client/client.js",

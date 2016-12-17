@@ -69,6 +69,14 @@ export class BulletAbility {
     Matter.World.add(this.player.engine.world, bullet);
     this.player.currentAbilities.push(bullet);
   }
+
+  render(ability, context){
+    context.beginPath();
+
+    context.arc(ability.position.x, ability.position.y, 10, 2*Math.PI, false);
+
+    context.fill();
+  }
 }
 
 export class WallAbility {
@@ -128,5 +136,18 @@ export class WallAbility {
     Matter.Body.setInertia(wall, Infinity);
     Matter.World.add(this.player.engine.world, wall);
     this.player.currentAbilities.push(wall);
+  }
+
+  render(ability, context){
+    context.beginPath();
+
+    var vertices = ability.vertices;
+    context.moveTo(vertices[0].x, vertices[0].y);
+    for (var j = 1; j < vertices.length; j += 1) {
+        context.lineTo(vertices[j].x, vertices[j].y);
+    }
+    context.lineTo(vertices[0].x, vertices[0].y);
+
+    context.fill();
   }
 }

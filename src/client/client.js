@@ -40,15 +40,11 @@ document.addEventListener("keydown", function(e){
     socket.emit("player decrease power");
   }
   if(e.key === "q"){
-    //game.player(socket.id).shoot();
-    //console.log("asdad");
     if(!game.currentPlayer.abilities[0].isOnCooldown()){
       socket.emit("use ability", 0);
     }
   }
   if(e.key === "w"){
-    //game.player(socket.id).shoot();
-    //console.log("asdad");
     if(!game.currentPlayer.abilities[1].isOnCooldown()){
       socket.emit("use ability", 1);
     }

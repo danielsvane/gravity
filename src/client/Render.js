@@ -123,25 +123,11 @@ export default class Renderer {
 
       let body = player.body;
       let color = game.spots[player.spot].color;
-      //console.log(game.players.length);
 
       context.fillStyle = color;
 
       for(let ability of player.currentAbilities){
-        context.beginPath();
-        // Bullet ability
-        if(ability.abilityId == 0){
-          context.arc(ability.position.x, ability.position.y, 10, 2*Math.PI, false);
-        // Wall ability
-        } else if(ability.abilityId == 1){
-          var vertices = ability.vertices;
-          context.moveTo(vertices[0].x, vertices[0].y);
-          for (var j = 1; j < vertices.length; j += 1) {
-              context.lineTo(vertices[j].x, vertices[j].y);
-          }
-          context.lineTo(vertices[0].x, vertices[0].y);
-        }
-        context.fill();
+        player.abilities[ability.abilityId].render(ability, context);
       }
 
       // Draw the circle body
