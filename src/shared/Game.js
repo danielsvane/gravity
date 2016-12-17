@@ -37,9 +37,9 @@ export default class Game {
   }
 
   sendState(){
-    setTimeout(() => {
-      this.io.sockets.emit("game state", this.getState());
-    }, 0);
+    //setTimeout(() => {
+      this.io.emit("game state", this.getState());
+    //}, 0);
   }
 
   addPlanet(x, y, radius){

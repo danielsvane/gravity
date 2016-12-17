@@ -3,7 +3,7 @@ import ClientGame from "../client/ClientGame";
 let game = new ClientGame();
 game.start();
 
-let socket = io();
+let socket = io(location.pathname);
 
 socket.on("connect", function(){
   checkTimeDiff();

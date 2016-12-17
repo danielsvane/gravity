@@ -45,7 +45,7 @@ export default class ClientGame extends Game {
     for(let playerObj of stateObj.players){
       this.addPlayer(playerObj);
     }
-    
+
     // Step game forward so it matches with server
     let difference = Date.now()-stateObj.time-this.serverClientTimeDiff;
     //console.log("time difference", difference);

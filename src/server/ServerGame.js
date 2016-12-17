@@ -10,6 +10,52 @@ export default class ServerGame extends Game {
     this.nextSpot = 0;
     this.spot = 0;
     this.steps = 0;
+
+    this.setupIO(io);
+  }
+
+  setupIO(io){
+    let game = this;
+    io.on('connection', function (socket) {
+      game.addPlayer(socket.client.id);
+      io.emit("game state", game.getState());
+
+      // For syncing unix time with client since they dont perfectly match (50ms off)
+      socket.on("foo", function(clientTime){
+        socket.emit("bar", clientTime, Date.now());
+      });
+
+      socket.on("player rotate", function(angle){
+        let player = game.player(socket.client.id);
+        player.rotate(angle);
+        socket.broadcast.emit("player rotate", player.socketId, player.body.angle);
+      });
+
+      socket.on("player increase power", function(){
+        let player = game.player(socket.client.id);
+        player.increasePower();
+        socket.broadcast.emit("player set power", player.socketId, player.power);
+      });
+
+      socket.on("player decrease power", function(){
+        let player = game.player(socket.client.id);
+        player.decreasePower();
+        socket.broadcast.emit("player set power", player.socketId, player.power);
+      });
+
+      socket.on("use ability", function(index){
+        let ability = game.player(socket.client.id).abilities[index];
+        if(!ability.isOnCooldown()){
+          ability.use();
+          io.emit("game state", game.getState());
+        }
+      });
+
+      socket.on("disconnect", function(){
+        game.removePlayer(socket.client.id);
+        io.emit("game state", game.getState());
+      });
+    });
   }
 
   addPlayer(socketId){

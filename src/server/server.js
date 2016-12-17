@@ -10,51 +10,33 @@ let io = ioFactory(server);
 
 server.listen(process.env.PORT || 80);
 app.use(express.static('dist'));
+app.set("view engine", "pug");
 
-let game = new Game(io);
-game.start();
+let games = {};
 
-io.on('connection', function (socket) {
-  game.addPlayer(socket.id);
-  io.sockets.emit("game state", game.getState());
+app.get("/:id", function(req, res){
+  let id = req.params.id;
 
-  // For syncing unix time with client since they dont perfectly match (50ms off)
-  socket.on("foo", function(clientTime){
-    socket.emit("bar", clientTime, Date.now());
-  });
+  if(!games[id]){
+    let ns = io.of("/"+id);
+    let game = new Game(ns);
 
-  socket.on("player rotate", function(angle){
-    let player = game.player(socket.id);
-    player.rotate(angle);
-    socket.broadcast.emit("player rotate", player.socketId, player.body.angle);
-  });
+    games[id] = game;
+    game.start();
+  }
 
-  socket.on("player increase power", function(){
-    let player = game.player(socket.id);
-    player.increasePower();
-    socket.broadcast.emit("player set power", player.socketId, player.power);
-  });
 
-  socket.on("player decrease power", function(){
-    let player = game.player(socket.id);
-    player.decreasePower();
-    socket.broadcast.emit("player set power", player.socketId, player.power);
-  });
-
-  socket.on("use ability", function(index){
-    let ability = game.player(socket.id).abilities[index];
-    if(!ability.isOnCooldown()){
-      ability.use();
-      io.sockets.emit("game state", game.getState());
-    }
-  });
-
-  socket.on("disconnect", function(){
-    game.removePlayer(socket.id);
-    io.sockets.emit("game state", game.getState());
-  });
-});
-
-app.get('/', function (req, res) {
+  //res.render('index', { namespace: 'Hey', message: 'Hello there!' })
   res.sendFile(path.resolve("sockettest.html"));
+  //res.redirect("/");
 });
+
+// app.get('/', function (req, res) {
+//   res.render('index', { title: 'Hey', message: 'Hello there!' })
+// });
+
+// app.get('/', function (req, res) {
+//   let game = new Game(io);
+//   game.start();
+//   res.sendFile(path.resolve("sockettest.html"));
+// });
