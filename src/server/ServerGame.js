@@ -24,8 +24,8 @@ export default class ServerGame extends Game {
     for(let i in this.players){
       let player = this.players[i];
       if(player.socketId === socketId){
-        for(let bullet of player.bullets){
-          Matter.World.remove(this.engine.world, bullet);
+        for(let ability of player.currentAbilities){
+          Matter.World.remove(this.engine.world, ability);
         }
         Matter.World.remove(this.engine.world, player.body);
         this.nextSpot = player.spot;
@@ -53,16 +53,18 @@ export default class ServerGame extends Game {
           angle: player.body.angle
         }
       }
-      // Get state of player bullets
-      playerObj.bullets = [];
-      for(let bullet of player.bullets){
-        let bulletObj = {
-          x: bullet.position.x,
-          y: bullet.position.y,
-          velocity: bullet.velocity,
-          time: bullet.time
+      // Get state of player current abilities
+      playerObj.currentAbilities = [];
+      for(let ability of player.currentAbilities){
+        let abilityObj = {
+          id: ability.abilityId,
+          x: ability.position.x,
+          y: ability.position.y,
+          angle: ability.angle,
+          velocity: ability.velocity,
+          time: ability.time
         }
-        playerObj.bullets.push(bulletObj);
+        playerObj.currentAbilities.push(abilityObj);
       }
 
       // Get state of player abilities

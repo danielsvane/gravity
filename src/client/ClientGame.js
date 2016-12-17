@@ -24,7 +24,7 @@ export default class ClientGame extends Game {
       playerObj.spot,
       playerObj.socketId,
       playerObj.settings,
-      playerObj.bullets,
+      playerObj.currentAbilities,
       playerObj.abilities
     );
     this.players.push(player);
@@ -32,10 +32,10 @@ export default class ClientGame extends Game {
 
   removePlayers(){
     for(let player of this.players){
-      for(let bullet of player.bullets){
-        Matter.World.remove(this.engine.world, bullet);
+      for(let ability of player.currentAbilities){
+        Matter.World.remove(this.engine.world, ability);
       }
-      player.bullets.length = 0;
+      player.currentAbilities.length = 0;
       Matter.World.remove(this.engine.world, player.body);
     }
     this.players.length = 0;
@@ -43,17 +43,20 @@ export default class ClientGame extends Game {
 
   setState(stateObj){
 
+    console.log(JSON.stringify(stateObj));
+
     this.removePlayers();
     for(let playerObj of stateObj.players){
       this.addPlayer(playerObj);
     }
+    console.log(this.players[0].currentAbilities);
 
     //this.step();
     // Step game forward so it matches with server
     let difference = Date.now()-stateObj.time-this.serverClientTimeDiff;
-    console.log("time difference", difference);
+    //console.log("time difference", difference);
     let steps = Math.round(difference/this.interval);
-    console.log("stepping ahead", steps, "times");
+    //console.log("stepping ahead", steps, "times");
     for(let i=0; i<steps; i++){
         this.step();
     }

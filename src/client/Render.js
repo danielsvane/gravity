@@ -85,27 +85,18 @@ export default class Renderer {
       context.fill();
     }
 
+    // Draw the ability cooldowns
     if(game.currentPlayer){
-      for(let ability of game.currentPlayer.abilities){
-        context.beginPath();
-        context.fillText("Q: " + ability.cooldownRemain, 10, 90);
-        context.fill();
-      }
-    }
+      let q = game.currentPlayer.abilities[0];
+      context.beginPath();
+      context.fillText("Q: " + q.cooldownRemain, 10, 90);
+      context.fill();
 
-    // // Draw the abilities
-    // if(game.currentPlayer){
-    //   for(let [i, ability] of game.currentPlayer.abilities.entries()){
-    //     if(i == game.currentPlayer.currentAbilityIndex){
-    //       context.strokeStyle = "#999";
-    //       context.lineWidth = 5;
-    //     } else {
-    //       context.strokeStyle = "#333";
-    //       context.lineWidth = 1;
-    //     }
-    //     ability.render(context, 10, 10+110*i);
-    //   }
-    // }
+      let w = game.currentPlayer.abilities[1];
+      context.beginPath();
+      context.fillText("W: " + w.cooldownRemain, 10, 120);
+      context.fill();
+    }
 
     context.save();
     context.setTransform(this.scale, 0, 0, this.scale, this.offsetX, this.offsetY);
@@ -136,9 +127,20 @@ export default class Renderer {
 
       context.fillStyle = color;
 
-      for(let bullet of player.bullets){
+      for(let ability of player.currentAbilities){
         context.beginPath();
-        context.arc(bullet.position.x, bullet.position.y, bullet.circleRadius, 2*Math.PI, false);
+        // Bullet ability
+        if(ability.abilityId == 0){
+          context.arc(ability.position.x, ability.position.y, 10, 2*Math.PI, false);
+        // Wall ability
+        } else if(ability.abilityId == 1){
+          var vertices = ability.vertices;
+          context.moveTo(vertices[0].x, vertices[0].y);
+          for (var j = 1; j < vertices.length; j += 1) {
+              context.lineTo(vertices[j].x, vertices[j].y);
+          }
+          context.lineTo(vertices[0].x, vertices[0].y);
+        }
         context.fill();
       }
 

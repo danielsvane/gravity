@@ -104,12 +104,12 @@ export default class Game {
 
     for(let planet of this.planets){
       for(let player of this.players){
-        for(let bullet of player.bullets){
-          let r = Matter.Vector.sub(planet.position, bullet.position);
+        for(let ability of player.currentAbilities){
+          let r = Matter.Vector.sub(planet.position, ability.position);
           let mag = Matter.Vector.magnitudeSquared(r);
           let norm = Matter.Vector.normalise(r);
-          let force = Matter.Vector.mult(norm, Math.pow(planet.circleRadius, 3)*bullet.mass*0.000008/mag); // 0.001
-          Matter.Body.applyForce(bullet, bullet.position, force);
+          let force = Matter.Vector.mult(norm, Math.pow(planet.circleRadius, 3)*ability.mass*0.000008/mag); // 0.001
+          Matter.Body.applyForce(ability, {x: 0, y: 0}, force);
         }
       }
     }
@@ -132,11 +132,11 @@ export default class Game {
 
   checkBulletTime(){
     for(let player of this.players){
-      for(let i in player.bullets){
-        let bullet = player.bullets[i];
-        bullet.time--;
-        if(bullet.time < 0){
-          player.removeBullet(i);
+      for(let i in player.currentAbilities){
+        let ability = player.currentAbilities[i];
+        ability.time--;
+        if(ability.time < 0){
+          player.removeCurrentAbility(i);
         }
       }
     }

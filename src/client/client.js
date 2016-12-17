@@ -41,11 +41,19 @@ document.addEventListener("keydown", function(e){
   }
   if(e.key === "q"){
     //game.player(socket.id).shoot();
-    console.log("asdad");
+    //console.log("asdad");
     if(!game.currentPlayer.abilities[0].isOnCooldown()){
       socket.emit("use ability", 0);
     }
   }
+  if(e.key === "w"){
+    //game.player(socket.id).shoot();
+    //console.log("asdad");
+    if(!game.currentPlayer.abilities[1].isOnCooldown()){
+      socket.emit("use ability", 1);
+    }
+  }
+
   if(e.key === "p"){
     socket.emit("foo", Date.now());
   }
@@ -93,12 +101,12 @@ let pingChecks = 0;
 let adjustedTimeSum = 0;
 socket.on("bar", function(clientTime, serverTime){
   let roundTime = Date.now()-clientTime;
-  console.log("round time");
+  //console.log("round time");
   let adjustedDifference = Date.now()-serverTime-roundTime/2;
   adjustedTimeSum += adjustedDifference;
   pingChecks++;
   if(pingChecks >= 10){
     game.serverClientTimeDiff = adjustedTimeSum/10;
-    console.log("average difference in client and server time", game.serverClientTimeDiff);
+    //console.log("average difference in client and server time", game.serverClientTimeDiff);
   }
 });
