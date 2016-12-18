@@ -4,9 +4,11 @@ import Matter from "matter-js";
 
 export default class ServerGame extends Game {
 
-  constructor(io){
+  constructor(io, gm, namespace){
     super();
     this.io = io;
+    this.gm = gm;
+    this.namespace = namespace;
     this.nextSpot = 0;
     this.spot = 0;
     this.steps = 0;
@@ -53,7 +55,8 @@ export default class ServerGame extends Game {
 
       socket.on("disconnect", function(){
         game.removePlayer(socket.client.id);
-        io.emit("game state", game.getState());
+        if(game.players.length) io.emit("game state", game.getState());
+        else game.gm.removeGame(game.namespace);
       });
     });
   }
