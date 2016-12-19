@@ -5,13 +5,7 @@ import GameManager from "../server/GameManager";
 import ioFactory from "socket.io";
 import cluster from "cluster";
 import os from "os";
-//import redis from "socket.io-redis";
 import sticky from "sticky-cluster";
-
-// console.log(cluster);
-// console.log(os.cpus().length);
-
-//cluster.schedulingPolicy = cluster.SCHED_RR;
 
 sticky(function(callback){
   let app = express();
