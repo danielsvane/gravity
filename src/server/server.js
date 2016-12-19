@@ -5,7 +5,7 @@ import GameManager from "../server/GameManager";
 import ioFactory from "socket.io";
 import cluster from "cluster";
 import os from "os";
-import redis from "socket.io-redis";
+//import redis from "socket.io-redis";
 import sticky from "sticky-cluster";
 
 // console.log(cluster);
@@ -17,7 +17,7 @@ sticky(function(callback){
   let app = express();
   let server = http.Server(app);
   let io = ioFactory(server);
-  io.adapter(redis(process.env.REDIS_URL));
+  //io.adapter(redis(process.env.REDIS_URL));
   let gm = new GameManager(io);
 
   app.use(express.static('dist'));
