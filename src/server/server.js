@@ -34,7 +34,7 @@ sticky(function(callback){
 
   callback(server);
 }, {
-  concurrency: process.env.WEB_CONCURRENCY || os.cpus().length;
+  concurrency: process.env.WEB_CONCURRENCY || os.cpus().length,
   port: process.env.PORT || 80,
   debug: true,
   env: function (index) { return { stickycluster_worker_index: index }; }
