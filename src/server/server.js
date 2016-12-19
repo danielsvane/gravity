@@ -17,7 +17,7 @@ sticky(function(callback){
   let app = express();
   let server = http.Server(app);
   let io = ioFactory(server);
-  //io.adapter(redis());
+  io.adapter(redis());
   let gm = new GameManager(io);
 
   app.use(express.static('dist'));
