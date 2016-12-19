@@ -13,13 +13,15 @@ export default class GameManager {
 
       this.games[namespace] = game;
       game.start();
+
+      console.log("added game: ", namespace);
     }
   }
 
   removeGame(namespace){
     delete this.games[namespace];
     delete this.io.nsps["/"+namespace];
-    console.log("removed game");
-    console.log(this.io);
+    console.log("removed game: ", namespace);
+    //console.log(this.io);
   }
 }

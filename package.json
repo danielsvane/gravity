@@ -33,8 +33,11 @@
     "express": "^4.14.0",
     "matter-js": "^0.11.1",
     "pug": "^2.0.0-beta6",
+    "redis": "^2.6.3",
     "socket.io": "^1.7.1",
     "socket.io-client": "^1.7.1",
+    "socket.io-redis": "^2.0.1",
+    "sticky-cluster": "^0.3.0",
     "webpack": "1.13.3"
   },
   "devDependencies": {

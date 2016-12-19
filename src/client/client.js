@@ -3,7 +3,9 @@ import ClientGame from "../client/ClientGame";
 let game = new ClientGame();
 game.start();
 
-let socket = io(location.pathname);
+let namespace = location.pathname.split("/")[2];
+console.log(namespace);
+let socket = io("/"+namespace);
 
 socket.on("connect", function(){
   checkTimeDiff();
