@@ -2,15 +2,17 @@ import http from "http";
 import express from "express";
 import path from "path";
 import GameManager from "../server/GameManager";
-import ioFactory from "socket.io";
+import sio from "socket.io";
 import cluster from "cluster";
 import os from "os";
 import sticky from "sticky-cluster";
 
+cluster.schedulingPolicy = cluster.SCHED_RR;
+
 sticky(function(callback){
   let app = express();
   let server = http.Server(app);
-  let io = ioFactory(server);
+  let io = sio(server);
   //io.adapter(redis(process.env.REDIS_URL));
   let gm = new GameManager(io);
 

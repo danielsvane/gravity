@@ -7,6 +7,7 @@ export default [
     output: {
       filename: "./dist/client.min.js"
     },
+    devtool: "source-map",
     module: {
       loaders: [
         {
